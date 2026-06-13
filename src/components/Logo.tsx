@@ -2,8 +2,8 @@ import logoAsset from "@/assets/deligo-logo.png.asset.json";
 
 export function Logo({ className = "h-9 w-9" }: { className?: string }) {
   return (
-    <div className={`${className} rounded-xl overflow-hidden bg-white shadow-sm ring-1 ring-border flex items-center justify-center`}>
-      <img src={logoAsset.url} alt="Deligo" className="h-full w-full object-cover scale-[1.6] translate-x-[8%]" />
+    <div className={`${className} flex items-center justify-center`}>
+      <img src={logoAsset.url} alt="Deligo" className="h-full w-full object-contain" />
     </div>
   );
 }
