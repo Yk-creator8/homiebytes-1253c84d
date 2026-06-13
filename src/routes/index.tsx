@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Utensils, ShoppingBag, Bike, ChefHat, Sparkles } from "lucide-react";
-import { foods } from "@/lib/mock-data";
-import { FoodCard } from "@/components/FoodCard";
+import { useQuery } from "@tanstack/react-query";
+import { FoodCard, type FoodCardData } from "@/components/FoodCard";
+import { supabase } from "@/integrations/supabase/client";
 import heroFood from "@/assets/hero-food.jpg";
 
 export const Route = createFileRoute("/")({
@@ -14,10 +15,33 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
+async function fetchFeatured(): Promise<FoodCardData[]> {
+  const { data, error } = await supabase
+    .from("food_items")
+    .select("id,name,price,image_url,is_veg,rating,prep_minutes,cook_id")
+    .eq("is_available", true)
+    .order("rating", { ascending: false })
+    .limit(6);
+  if (error) throw error;
+  const cookIds = [...new Set((data ?? []).map((d) => d.cook_id))];
+  let cooks: Record<string, { full_name: string | null; location: string | null }> = {};
+  if (cookIds.length) {
+    const { data: cs } = await supabase.from("profiles").select("id,full_name,location").in("id", cookIds);
+    cooks = Object.fromEntries((cs ?? []).map((c) => [c.id, { full_name: c.full_name, location: c.location }]));
+  }
+  return (data ?? []).map((f) => ({
+    id: f.id, name: f.name, price: Number(f.price), image_url: f.image_url,
+    is_veg: f.is_veg, rating: Number(f.rating), prep_minutes: f.prep_minutes,
+    cook_name: cooks[f.cook_id]?.full_name ?? "Home cook",
+    cook_location: cooks[f.cook_id]?.location ?? null,
+  }));
+}
+
 function Index() {
+  const { data: foods = [] } = useQuery({ queryKey: ["featured-foods"], queryFn: fetchFeatured });
+
   return (
     <div>
-      {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 -z-10" style={{ background: "var(--gradient-cream)" }} />
         <div className="mx-auto max-w-6xl px-4 pt-10 pb-16 md:pt-20 md:pb-24 grid md:grid-cols-2 gap-10 items-center">
@@ -35,30 +59,19 @@ function Index() {
               <Link to="/browse" className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-warm)] hover:opacity-95">
                 Order Now <ArrowRight className="h-4 w-4" />
               </Link>
-              <Link to="/cook" className="inline-flex items-center gap-2 rounded-xl bg-background ring-1 ring-border px-5 py-3 text-sm font-semibold hover:bg-secondary">
+              <Link to="/auth" className="inline-flex items-center gap-2 rounded-xl bg-background ring-1 ring-border px-5 py-3 text-sm font-semibold hover:bg-secondary">
                 <ChefHat className="h-4 w-4" /> Become a cook
               </Link>
-            </div>
-            <div className="mt-8 flex items-center gap-6 text-xs text-muted-foreground">
-              <div><div className="text-lg font-bold text-foreground">120+</div>home cooks</div>
-              <div><div className="text-lg font-bold text-foreground">4.8★</div>avg rating</div>
-              <div><div className="text-lg font-bold text-foreground">35 min</div>avg delivery</div>
             </div>
           </div>
           <div className="relative">
             <div className="aspect-square rounded-[2rem] overflow-hidden shadow-[var(--shadow-warm)] ring-1 ring-border">
-              <img src={heroFood} alt="Homemade thali" width={1536} height={1152} className="h-full w-full object-cover" />
-            </div>
-            <div className="absolute -bottom-5 -left-5 rounded-2xl bg-background ring-1 ring-border shadow-[var(--shadow-card)] px-4 py-3">
-              <div className="text-xs text-muted-foreground">Today's special</div>
-              <div className="font-semibold">Anita's Paneer Butter Masala</div>
-              <div className="text-sm text-primary font-bold">₹180</div>
+              <img src={heroFood} alt="Homemade thali" className="h-full w-full object-cover" />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Featured */}
       <section className="mx-auto max-w-6xl px-4 py-14">
         <div className="flex items-end justify-between mb-6">
           <div>
@@ -67,12 +80,17 @@ function Index() {
           </div>
           <Link to="/browse" className="text-sm font-semibold text-primary hover:underline">See all →</Link>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {foods.slice(0, 6).map((f) => <FoodCard key={f.id} food={f} />)}
-        </div>
+        {foods.length === 0 ? (
+          <div className="rounded-2xl bg-card ring-1 ring-border p-10 text-center text-muted-foreground">
+            No meals available yet. <Link to="/auth" className="text-primary font-semibold">Become a cook</Link> and be the first to share.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {foods.map((f) => <FoodCard key={f.id} food={f} />)}
+          </div>
+        )}
       </section>
 
-      {/* How it works */}
       <section className="bg-secondary/40 py-16">
         <div className="mx-auto max-w-6xl px-4">
           <h2 className="font-display text-2xl md:text-3xl font-bold text-center">How it works</h2>
@@ -97,7 +115,6 @@ function Index() {
         </div>
       </section>
 
-      {/* Cook CTA */}
       <section className="mx-auto max-w-6xl px-4 py-16">
         <div className="rounded-3xl p-8 md:p-12 text-primary-foreground relative overflow-hidden" style={{ background: "var(--gradient-warm)" }}>
           <div className="relative z-10 max-w-xl">
@@ -106,11 +123,10 @@ function Index() {
             </div>
             <h2 className="mt-4 font-display text-3xl md:text-4xl font-bold">Cook what you love. Earn what you deserve.</h2>
             <p className="mt-3 opacity-90">Join Deligo as a home cook and share your recipes with neighbours. We handle orders, you handle the magic.</p>
-            <Link to="/cook" className="mt-6 inline-flex items-center gap-2 rounded-xl bg-background text-foreground px-5 py-3 text-sm font-semibold hover:opacity-95">
+            <Link to="/auth" className="mt-6 inline-flex items-center gap-2 rounded-xl bg-background text-foreground px-5 py-3 text-sm font-semibold hover:opacity-95">
               Become a cook <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
-          <div className="absolute -right-10 -bottom-10 h-64 w-64 rounded-full bg-white/10 blur-2xl" />
         </div>
       </section>
     </div>
