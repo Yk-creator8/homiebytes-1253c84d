@@ -5,6 +5,7 @@ import { ShieldCheck, Plus, Trash2, IndianRupee, ShoppingBag, TrendingUp, Check,
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { uploadFoodImage, FOOD_FALLBACK_IMAGE } from "@/lib/storage";
+import { CUISINES } from "@/lib/cuisines";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/cook")({
