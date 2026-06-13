@@ -1,5 +1,5 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { ShoppingBag, Menu, ChefHat, Receipt, Home, LogOut, User as UserIcon, LogIn } from "lucide-react";
+import { ShoppingBag, Menu, ChefHat, Receipt, Home, LogOut, User as UserIcon, LogIn, Heart } from "lucide-react";
 import { LogoWordmark } from "./Logo";
 import { useCart } from "@/lib/cart-store";
 import { useAuth } from "@/lib/auth-context";
