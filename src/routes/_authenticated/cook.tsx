@@ -250,6 +250,7 @@ function AddDishForm({ userId, onClose, onSaved }: { userId: string; onClose: ()
   const [description, setDescription] = useState("");
   const [availability, setAvailability] = useState<"lunch" | "dinner" | "both">("both");
   const [isVeg, setIsVeg] = useState(true);
+  const [cuisine, setCuisine] = useState<string>("Other");
   const [prepMin, setPrepMin] = useState("30");
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
