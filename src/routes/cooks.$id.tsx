@@ -89,10 +89,9 @@ function CookProfile() {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {menu.map((m) => (
               <FoodCard key={m.id} food={{
-                id: m.id, name: m.name, price: Number(m.price), image: m.image_url ?? "",
-                cookId: m.cook_id, cookName: cook.full_name ?? "Home cook", rating: Number(m.rating),
-                prepMin: m.prep_minutes, isVeg: m.is_veg, cuisine: m.cuisine,
-                location: cook.location ?? "",
+                id: m.id, name: m.name, price: Number(m.price), image_url: m.image_url,
+                is_veg: m.is_veg, rating: Number(m.rating), prep_minutes: m.prep_minutes,
+                cuisine: m.cuisine, cook_name: cook.full_name, cook_location: cook.location,
               }} />
             ))}
           </div>
