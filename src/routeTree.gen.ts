@@ -14,6 +14,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as FoodIdRouteImport } from './routes/food.$id'
+import { Route as CooksIdRouteImport } from './routes/cooks.$id'
 import { Route as AuthenticatedOrdersRouteImport } from './routes/_authenticated/orders'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as AuthenticatedFavoritesRouteImport } from './routes/_authenticated/favorites'
@@ -42,6 +43,11 @@ const IndexRoute = IndexRouteImport.update({
 const FoodIdRoute = FoodIdRouteImport.update({
   id: '/food/$id',
   path: '/food/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CooksIdRoute = CooksIdRouteImport.update({
+  id: '/cooks/$id',
+  path: '/cooks/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedOrdersRoute = AuthenticatedOrdersRouteImport.update({
@@ -79,6 +85,7 @@ export interface FileRoutesByFullPath {
   '/favorites': typeof AuthenticatedFavoritesRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/orders': typeof AuthenticatedOrdersRoute
+  '/cooks/$id': typeof CooksIdRoute
   '/food/$id': typeof FoodIdRoute
 }
 export interface FileRoutesByTo {
@@ -90,6 +97,7 @@ export interface FileRoutesByTo {
   '/favorites': typeof AuthenticatedFavoritesRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/orders': typeof AuthenticatedOrdersRoute
+  '/cooks/$id': typeof CooksIdRoute
   '/food/$id': typeof FoodIdRoute
 }
 export interface FileRoutesById {
@@ -103,6 +111,7 @@ export interface FileRoutesById {
   '/_authenticated/favorites': typeof AuthenticatedFavoritesRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/orders': typeof AuthenticatedOrdersRoute
+  '/cooks/$id': typeof CooksIdRoute
   '/food/$id': typeof FoodIdRoute
 }
 export interface FileRouteTypes {
@@ -116,6 +125,7 @@ export interface FileRouteTypes {
     | '/favorites'
     | '/onboarding'
     | '/orders'
+    | '/cooks/$id'
     | '/food/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -127,6 +137,7 @@ export interface FileRouteTypes {
     | '/favorites'
     | '/onboarding'
     | '/orders'
+    | '/cooks/$id'
     | '/food/$id'
   id:
     | '__root__'
@@ -139,6 +150,7 @@ export interface FileRouteTypes {
     | '/_authenticated/favorites'
     | '/_authenticated/onboarding'
     | '/_authenticated/orders'
+    | '/cooks/$id'
     | '/food/$id'
   fileRoutesById: FileRoutesById
 }
@@ -147,6 +159,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   BrowseRoute: typeof BrowseRoute
+  CooksIdRoute: typeof CooksIdRoute
   FoodIdRoute: typeof FoodIdRoute
 }
 
@@ -185,6 +198,13 @@ declare module '@tanstack/react-router' {
       path: '/food/$id'
       fullPath: '/food/$id'
       preLoaderRoute: typeof FoodIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cooks/$id': {
+      id: '/cooks/$id'
+      path: '/cooks/$id'
+      fullPath: '/cooks/$id'
+      preLoaderRoute: typeof CooksIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/orders': {
@@ -249,8 +269,19 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   BrowseRoute: BrowseRoute,
+  CooksIdRoute: CooksIdRoute,
   FoodIdRoute: FoodIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
