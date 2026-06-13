@@ -14,11 +14,38 @@ export type Database = {
   }
   public: {
     Tables: {
+      favorites: {
+        Row: {
+          created_at: string
+          food_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          food_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          food_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "favorites_food_id_fkey"
+            columns: ["food_id"]
+            isOneToOne: false
+            referencedRelation: "food_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       food_items: {
         Row: {
           availability: string
           cook_id: string
           created_at: string
+          cuisine: string
           description: string | null
           id: string
           image_url: string | null
@@ -33,6 +60,7 @@ export type Database = {
           availability?: string
           cook_id: string
           created_at?: string
+          cuisine?: string
           description?: string | null
           id?: string
           image_url?: string | null
@@ -47,6 +75,7 @@ export type Database = {
           availability?: string
           cook_id?: string
           created_at?: string
+          cuisine?: string
           description?: string | null
           id?: string
           image_url?: string | null
@@ -169,6 +198,41 @@ export type Database = {
           phone?: string | null
         }
         Relationships: []
+      }
+      reviews: {
+        Row: {
+          comment: string | null
+          created_at: string
+          food_id: string
+          id: string
+          rating: number
+          user_id: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          food_id: string
+          id?: string
+          rating: number
+          user_id: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          food_id?: string
+          id?: string
+          rating?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_food_id_fkey"
+            columns: ["food_id"]
+            isOneToOne: false
+            referencedRelation: "food_items"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
