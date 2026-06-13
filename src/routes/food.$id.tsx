@@ -73,7 +73,7 @@ function FoodDetail() {
           {/* Cook card */}
           <div className="mt-5 rounded-2xl bg-card ring-1 ring-border p-4 flex items-center gap-3">
             <div className="h-12 w-12 rounded-full bg-primary/15 text-primary inline-flex items-center justify-center font-bold text-lg">
-              {food.cookName.split(" ").map((s) => s[0]).join("").slice(0, 2)}
+              {food.cookName.split(" ").map((s: string) => s[0]).join("").slice(0, 2)}
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1.5">
