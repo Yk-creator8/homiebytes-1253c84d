@@ -16,6 +16,7 @@ function Cart() {
   const navigate = useNavigate();
   const { user, role } = useAuth();
   const [address, setAddress] = useState("");
+  const [payment, setPayment] = useState<"cod" | "upi">("cod");
   const [busy, setBusy] = useState(false);
 
   // Group by cook
@@ -116,10 +117,22 @@ function Cart() {
           </div>
 
           <div className="mt-4">
-            <div className="text-sm font-semibold mb-2">Payment</div>
-            <div className="rounded-xl ring-1 ring-border p-3 text-sm flex items-center justify-between bg-secondary/50">
-              <span>UPI · Pay on delivery</span>
-              <span className="text-xs text-muted-foreground">(placeholder)</span>
+            <div className="text-sm font-semibold mb-2">Payment method</div>
+            <div className="space-y-2">
+              <label className={`flex items-center gap-3 rounded-xl ring-1 p-3 cursor-pointer text-sm ${payment === "cod" ? "ring-primary bg-primary/5" : "ring-border"}`}>
+                <input type="radio" checked={payment === "cod"} onChange={() => setPayment("cod")} className="accent-primary" />
+                <div className="flex-1">
+                  <div className="font-medium">Cash on delivery</div>
+                  <div className="text-xs text-muted-foreground">Pay the cook or delivery partner when food arrives</div>
+                </div>
+              </label>
+              <label className={`flex items-center gap-3 rounded-xl ring-1 p-3 cursor-pointer text-sm ${payment === "upi" ? "ring-primary bg-primary/5" : "ring-border"}`}>
+                <input type="radio" checked={payment === "upi"} onChange={() => setPayment("upi")} className="accent-primary" />
+                <div className="flex-1">
+                  <div className="font-medium">UPI / Online</div>
+                  <div className="text-xs text-muted-foreground">Pay directly to the cook via UPI after order confirmation</div>
+                </div>
+              </label>
             </div>
           </div>
 

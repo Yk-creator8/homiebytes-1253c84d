@@ -20,6 +20,7 @@ import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authentic
 import { Route as AuthenticatedFavoritesRouteImport } from './routes/_authenticated/favorites'
 import { Route as AuthenticatedCookRouteImport } from './routes/_authenticated/cook'
 import { Route as AuthenticatedCartRouteImport } from './routes/_authenticated/cart'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 
 const BrowseRoute = BrowseRouteImport.update({
   id: '/browse',
@@ -75,11 +76,17 @@ const AuthenticatedCartRoute = AuthenticatedCartRouteImport.update({
   path: '/cart',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/browse': typeof BrowseRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/cart': typeof AuthenticatedCartRoute
   '/cook': typeof AuthenticatedCookRoute
   '/favorites': typeof AuthenticatedFavoritesRoute
@@ -92,6 +99,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/browse': typeof BrowseRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/cart': typeof AuthenticatedCartRoute
   '/cook': typeof AuthenticatedCookRoute
   '/favorites': typeof AuthenticatedFavoritesRoute
@@ -106,6 +114,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/browse': typeof BrowseRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/cart': typeof AuthenticatedCartRoute
   '/_authenticated/cook': typeof AuthenticatedCookRoute
   '/_authenticated/favorites': typeof AuthenticatedFavoritesRoute
@@ -120,6 +129,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/browse'
+    | '/admin'
     | '/cart'
     | '/cook'
     | '/favorites'
@@ -132,6 +142,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/browse'
+    | '/admin'
     | '/cart'
     | '/cook'
     | '/favorites'
@@ -145,6 +156,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/browse'
+    | '/_authenticated/admin'
     | '/_authenticated/cart'
     | '/_authenticated/cook'
     | '/_authenticated/favorites'
@@ -242,10 +254,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCartRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedCartRoute: typeof AuthenticatedCartRoute
   AuthenticatedCookRoute: typeof AuthenticatedCookRoute
   AuthenticatedFavoritesRoute: typeof AuthenticatedFavoritesRoute
@@ -254,6 +274,7 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedCartRoute: AuthenticatedCartRoute,
   AuthenticatedCookRoute: AuthenticatedCookRoute,
   AuthenticatedFavoritesRoute: AuthenticatedFavoritesRoute,
@@ -275,3 +296,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

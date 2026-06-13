@@ -108,19 +108,19 @@ function FoodDetail() {
           </div>
           <p className="mt-4 text-muted-foreground leading-relaxed">{food.description ?? "Made fresh by a local home cook."}</p>
 
-          <div className="mt-5 rounded-2xl bg-card ring-1 ring-border p-4 flex items-center gap-3">
-            <div className="h-12 w-12 rounded-full bg-primary/15 text-primary inline-flex items-center justify-center font-bold text-lg">{cookInitials}</div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-1.5">
-                <div className="font-semibold truncate">{cook?.full_name ?? "Home cook"}</div>
-                {cook?.is_verified && <ShieldCheck className="h-4 w-4 text-success" />}
+          <Link to="/cooks/$id" params={{ id: food.cook_id }} className="mt-5 block rounded-2xl bg-card ring-1 ring-border p-4 hover:ring-primary/40 transition">
+            <div className="flex items-center gap-3">
+              <div className="h-12 w-12 rounded-full bg-primary/15 text-primary inline-flex items-center justify-center font-bold text-lg">{cookInitials}</div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <div className="font-semibold truncate">{cook?.full_name ?? "Home cook"}</div>
+                  {cook?.is_verified && <ShieldCheck className="h-4 w-4 text-success" />}
+                </div>
+                <div className="text-xs text-muted-foreground">{cook?.location ?? "Local kitchen"} · View full menu →</div>
               </div>
-              <div className="text-xs text-muted-foreground">{cook?.location ?? "Local kitchen"} · {Number(food.rating).toFixed(1)}★ · 30–45 min</div>
+              <MessageCircle className="h-4 w-4 text-muted-foreground" />
             </div>
-            <button onClick={() => toast.info("Chat coming soon")} className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary px-3 py-2 rounded-lg hover:bg-secondary">
-              <MessageCircle className="h-4 w-4" /> Chat
-            </button>
-          </div>
+          </Link>
 
           <div className="mt-5 rounded-2xl bg-secondary/50 p-4 text-sm space-y-1.5">
             <div className="flex justify-between"><span className="text-muted-foreground">Item ({qty} × ₹{food.price})</span><span>₹{Number(food.price) * qty}</span></div>
