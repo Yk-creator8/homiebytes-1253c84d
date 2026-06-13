@@ -16,6 +16,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as FoodIdRouteImport } from './routes/food.$id'
 import { Route as AuthenticatedOrdersRouteImport } from './routes/_authenticated/orders'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
+import { Route as AuthenticatedFavoritesRouteImport } from './routes/_authenticated/favorites'
 import { Route as AuthenticatedCookRouteImport } from './routes/_authenticated/cook'
 import { Route as AuthenticatedCartRouteImport } from './routes/_authenticated/cart'
 
@@ -53,6 +54,11 @@ const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
   path: '/onboarding',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedFavoritesRoute = AuthenticatedFavoritesRouteImport.update({
+  id: '/favorites',
+  path: '/favorites',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedCookRoute = AuthenticatedCookRouteImport.update({
   id: '/cook',
   path: '/cook',
@@ -70,6 +76,7 @@ export interface FileRoutesByFullPath {
   '/browse': typeof BrowseRoute
   '/cart': typeof AuthenticatedCartRoute
   '/cook': typeof AuthenticatedCookRoute
+  '/favorites': typeof AuthenticatedFavoritesRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/orders': typeof AuthenticatedOrdersRoute
   '/food/$id': typeof FoodIdRoute
@@ -80,6 +87,7 @@ export interface FileRoutesByTo {
   '/browse': typeof BrowseRoute
   '/cart': typeof AuthenticatedCartRoute
   '/cook': typeof AuthenticatedCookRoute
+  '/favorites': typeof AuthenticatedFavoritesRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/orders': typeof AuthenticatedOrdersRoute
   '/food/$id': typeof FoodIdRoute
@@ -92,6 +100,7 @@ export interface FileRoutesById {
   '/browse': typeof BrowseRoute
   '/_authenticated/cart': typeof AuthenticatedCartRoute
   '/_authenticated/cook': typeof AuthenticatedCookRoute
+  '/_authenticated/favorites': typeof AuthenticatedFavoritesRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/orders': typeof AuthenticatedOrdersRoute
   '/food/$id': typeof FoodIdRoute
@@ -104,6 +113,7 @@ export interface FileRouteTypes {
     | '/browse'
     | '/cart'
     | '/cook'
+    | '/favorites'
     | '/onboarding'
     | '/orders'
     | '/food/$id'
@@ -114,6 +124,7 @@ export interface FileRouteTypes {
     | '/browse'
     | '/cart'
     | '/cook'
+    | '/favorites'
     | '/onboarding'
     | '/orders'
     | '/food/$id'
@@ -125,6 +136,7 @@ export interface FileRouteTypes {
     | '/browse'
     | '/_authenticated/cart'
     | '/_authenticated/cook'
+    | '/_authenticated/favorites'
     | '/_authenticated/onboarding'
     | '/_authenticated/orders'
     | '/food/$id'
@@ -189,6 +201,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOnboardingRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/favorites': {
+      id: '/_authenticated/favorites'
+      path: '/favorites'
+      fullPath: '/favorites'
+      preLoaderRoute: typeof AuthenticatedFavoritesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/cook': {
       id: '/_authenticated/cook'
       path: '/cook'
@@ -209,6 +228,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedCartRoute: typeof AuthenticatedCartRoute
   AuthenticatedCookRoute: typeof AuthenticatedCookRoute
+  AuthenticatedFavoritesRoute: typeof AuthenticatedFavoritesRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedOrdersRoute: typeof AuthenticatedOrdersRoute
 }
@@ -216,6 +236,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCartRoute: AuthenticatedCartRoute,
   AuthenticatedCookRoute: AuthenticatedCookRoute,
+  AuthenticatedFavoritesRoute: AuthenticatedFavoritesRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedOrdersRoute: AuthenticatedOrdersRoute,
 }
@@ -233,3 +254,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
