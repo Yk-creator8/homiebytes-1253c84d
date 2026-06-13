@@ -272,6 +272,7 @@ function AddDishForm({ userId, onClose, onSaved }: { userId: string; onClose: ()
         image_url,
         is_veg: isVeg,
         availability,
+        cuisine,
         prep_minutes: Math.max(5, Math.min(180, Number(prepMin) || 30)),
       });
       if (error) throw error;
