@@ -10,6 +10,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 const customerNav = [
   { to: "/", label: "Home", icon: Home },
   { to: "/browse", label: "Browse", icon: ShoppingBag },
+  { to: "/favorites", label: "Favorites", icon: Heart },
   { to: "/orders", label: "Orders", icon: Receipt },
 ];
 
