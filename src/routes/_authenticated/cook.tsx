@@ -5,6 +5,7 @@ import { ShieldCheck, Plus, Trash2, IndianRupee, ShoppingBag, TrendingUp, Check,
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { uploadFoodImage, FOOD_FALLBACK_IMAGE } from "@/lib/storage";
+import { CUISINES } from "@/lib/cuisines";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/cook")({
@@ -249,6 +250,7 @@ function AddDishForm({ userId, onClose, onSaved }: { userId: string; onClose: ()
   const [description, setDescription] = useState("");
   const [availability, setAvailability] = useState<"lunch" | "dinner" | "both">("both");
   const [isVeg, setIsVeg] = useState(true);
+  const [cuisine, setCuisine] = useState<string>("Other");
   const [prepMin, setPrepMin] = useState("30");
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
@@ -270,6 +272,7 @@ function AddDishForm({ userId, onClose, onSaved }: { userId: string; onClose: ()
         image_url,
         is_veg: isVeg,
         availability,
+        cuisine,
         prep_minutes: Math.max(5, Math.min(180, Number(prepMin) || 30)),
       });
       if (error) throw error;
@@ -300,6 +303,9 @@ function AddDishForm({ userId, onClose, onSaved }: { userId: string; onClose: ()
           <option value="both">Lunch & dinner</option>
         </select>
       </div>
+      <select value={cuisine} onChange={(e) => setCuisine(e.target.value)} className="w-full rounded-lg bg-background ring-1 ring-border px-3 py-2 text-sm">
+        {CUISINES.map((c) => <option key={c} value={c}>{c}</option>)}
+      </select>
       <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" rows={2} maxLength={600} className="w-full rounded-lg bg-background ring-1 ring-border px-3 py-2 text-sm resize-none" />
       <div>
         <input ref={fileRef} type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} className="hidden" />
