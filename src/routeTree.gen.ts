@@ -14,11 +14,13 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as FoodIdRouteImport } from './routes/food.$id'
+import { Route as CooksIdRouteImport } from './routes/cooks.$id'
 import { Route as AuthenticatedOrdersRouteImport } from './routes/_authenticated/orders'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as AuthenticatedFavoritesRouteImport } from './routes/_authenticated/favorites'
 import { Route as AuthenticatedCookRouteImport } from './routes/_authenticated/cook'
 import { Route as AuthenticatedCartRouteImport } from './routes/_authenticated/cart'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 
 const BrowseRoute = BrowseRouteImport.update({
   id: '/browse',
@@ -42,6 +44,11 @@ const IndexRoute = IndexRouteImport.update({
 const FoodIdRoute = FoodIdRouteImport.update({
   id: '/food/$id',
   path: '/food/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CooksIdRoute = CooksIdRouteImport.update({
+  id: '/cooks/$id',
+  path: '/cooks/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedOrdersRoute = AuthenticatedOrdersRouteImport.update({
@@ -69,27 +76,36 @@ const AuthenticatedCartRoute = AuthenticatedCartRouteImport.update({
   path: '/cart',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/browse': typeof BrowseRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/cart': typeof AuthenticatedCartRoute
   '/cook': typeof AuthenticatedCookRoute
   '/favorites': typeof AuthenticatedFavoritesRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/orders': typeof AuthenticatedOrdersRoute
+  '/cooks/$id': typeof CooksIdRoute
   '/food/$id': typeof FoodIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/browse': typeof BrowseRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/cart': typeof AuthenticatedCartRoute
   '/cook': typeof AuthenticatedCookRoute
   '/favorites': typeof AuthenticatedFavoritesRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/orders': typeof AuthenticatedOrdersRoute
+  '/cooks/$id': typeof CooksIdRoute
   '/food/$id': typeof FoodIdRoute
 }
 export interface FileRoutesById {
@@ -98,11 +114,13 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/browse': typeof BrowseRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/cart': typeof AuthenticatedCartRoute
   '/_authenticated/cook': typeof AuthenticatedCookRoute
   '/_authenticated/favorites': typeof AuthenticatedFavoritesRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/orders': typeof AuthenticatedOrdersRoute
+  '/cooks/$id': typeof CooksIdRoute
   '/food/$id': typeof FoodIdRoute
 }
 export interface FileRouteTypes {
@@ -111,22 +129,26 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/browse'
+    | '/admin'
     | '/cart'
     | '/cook'
     | '/favorites'
     | '/onboarding'
     | '/orders'
+    | '/cooks/$id'
     | '/food/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
     | '/browse'
+    | '/admin'
     | '/cart'
     | '/cook'
     | '/favorites'
     | '/onboarding'
     | '/orders'
+    | '/cooks/$id'
     | '/food/$id'
   id:
     | '__root__'
@@ -134,11 +156,13 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/browse'
+    | '/_authenticated/admin'
     | '/_authenticated/cart'
     | '/_authenticated/cook'
     | '/_authenticated/favorites'
     | '/_authenticated/onboarding'
     | '/_authenticated/orders'
+    | '/cooks/$id'
     | '/food/$id'
   fileRoutesById: FileRoutesById
 }
@@ -147,6 +171,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   BrowseRoute: typeof BrowseRoute
+  CooksIdRoute: typeof CooksIdRoute
   FoodIdRoute: typeof FoodIdRoute
 }
 
@@ -187,6 +212,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FoodIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cooks/$id': {
+      id: '/cooks/$id'
+      path: '/cooks/$id'
+      fullPath: '/cooks/$id'
+      preLoaderRoute: typeof CooksIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/orders': {
       id: '/_authenticated/orders'
       path: '/orders'
@@ -222,10 +254,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCartRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedCartRoute: typeof AuthenticatedCartRoute
   AuthenticatedCookRoute: typeof AuthenticatedCookRoute
   AuthenticatedFavoritesRoute: typeof AuthenticatedFavoritesRoute
@@ -234,6 +274,7 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedCartRoute: AuthenticatedCartRoute,
   AuthenticatedCookRoute: AuthenticatedCookRoute,
   AuthenticatedFavoritesRoute: AuthenticatedFavoritesRoute,
@@ -249,6 +290,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   BrowseRoute: BrowseRoute,
+  CooksIdRoute: CooksIdRoute,
   FoodIdRoute: FoodIdRoute,
 }
 export const routeTree = rootRouteImport

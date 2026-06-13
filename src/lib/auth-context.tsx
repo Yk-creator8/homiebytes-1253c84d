@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useRouter } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 
-export type AppRole = "customer" | "cook";
+export type AppRole = "customer" | "cook" | "admin";
 
 type Profile = {
   id: string;
