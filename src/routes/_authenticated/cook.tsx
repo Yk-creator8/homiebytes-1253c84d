@@ -303,6 +303,9 @@ function AddDishForm({ userId, onClose, onSaved }: { userId: string; onClose: ()
           <option value="both">Lunch & dinner</option>
         </select>
       </div>
+      <select value={cuisine} onChange={(e) => setCuisine(e.target.value)} className="w-full rounded-lg bg-background ring-1 ring-border px-3 py-2 text-sm">
+        {CUISINES.map((c) => <option key={c} value={c}>{c}</option>)}
+      </select>
       <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" rows={2} maxLength={600} className="w-full rounded-lg bg-background ring-1 ring-border px-3 py-2 text-sm resize-none" />
       <div>
         <input ref={fileRef} type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} className="hidden" />
