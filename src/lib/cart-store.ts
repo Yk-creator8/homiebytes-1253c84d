@@ -1,9 +1,15 @@
 import { useSyncExternalStore } from "react";
-import type { Food } from "./mock-data";
 
-export type CartItem = { food: Food; qty: number };
+export type CartItem = {
+  foodId: string;
+  cookId: string;
+  name: string;
+  price: number;
+  image: string;
+  qty: number;
+};
 
-const STORAGE_KEY = "deligo-cart-v1";
+const STORAGE_KEY = "deligo-cart-v2";
 let items: CartItem[] = [];
 const listeners = new Set<() => void>();
 
@@ -15,37 +21,26 @@ if (typeof window !== "undefined") {
 }
 
 function emit() {
-  if (typeof window !== "undefined") {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-  }
+  if (typeof window !== "undefined") localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
   listeners.forEach((l) => l());
 }
 
 export const cartStore = {
-  subscribe(l: () => void) {
-    listeners.add(l);
-    return () => listeners.delete(l);
-  },
+  subscribe(l: () => void) { listeners.add(l); return () => listeners.delete(l); },
   getSnapshot: () => items,
   getServerSnapshot: () => [] as CartItem[],
-  add(food: Food, qty = 1) {
-    const existing = items.find((i) => i.food.id === food.id);
-    if (existing) items = items.map((i) => i.food.id === food.id ? { ...i, qty: i.qty + qty } : i);
-    else items = [...items, { food, qty }];
+  add(item: Omit<CartItem, "qty">, qty = 1) {
+    const existing = items.find((i) => i.foodId === item.foodId);
+    if (existing) items = items.map((i) => i.foodId === item.foodId ? { ...i, qty: i.qty + qty } : i);
+    else items = [...items, { ...item, qty }];
     emit();
   },
   setQty(id: string, qty: number) {
-    items = qty <= 0 ? items.filter((i) => i.food.id !== id) : items.map((i) => i.food.id === id ? { ...i, qty } : i);
+    items = qty <= 0 ? items.filter((i) => i.foodId !== id) : items.map((i) => i.foodId === id ? { ...i, qty } : i);
     emit();
   },
-  remove(id: string) {
-    items = items.filter((i) => i.food.id !== id);
-    emit();
-  },
-  clear() {
-    items = [];
-    emit();
-  },
+  remove(id: string) { items = items.filter((i) => i.foodId !== id); emit(); },
+  clear() { items = []; emit(); },
 };
 
 export function useCart() {
