@@ -58,33 +58,32 @@ function Index() {
         <div className="absolute inset-0 -z-10" style={{ background: "var(--gradient-cream)" }} />
         <div className="mx-auto max-w-6xl px-4 pt-10 pb-12 md:pt-20 md:pb-20 grid md:grid-cols-2 gap-10 items-center">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full bg-background/80 ring-1 ring-border px-3 py-1.5 text-xs font-medium text-muted-foreground backdrop-blur">
-              <Sparkles className="h-3.5 w-3.5 text-primary" /> Made today, by real home cooks
+            <div className="inline-flex items-center gap-2 rounded-full bg-background/80 ring-1 ring-border px-3 py-1.5 text-xs font-medium text-muted-foreground backdrop-blur animate-fade-in">
+              <Sparkles className="h-3.5 w-3.5 text-primary" /> Cloud kitchens · real home cooks · delivered hot
             </div>
-            <h1 className="mt-5 font-display text-4xl md:text-6xl font-extrabold leading-[1.05] tracking-tight">
-              Fresh <span className="text-primary">homemade</span><br />food near you.
+            <h1 className="mt-5 font-display text-4xl md:text-6xl font-extrabold leading-[1.05] tracking-tight animate-fade-in">
+              Good food. <span className="text-primary">Anytime.</span><br />Anywhere.
             </h1>
-            <p className="mt-5 text-base md:text-lg text-muted-foreground max-w-md">
-              Discover meals cooked by neighbours who love what they make. Delivered warm in 30–45 minutes.
+            <p className="mt-5 text-base md:text-lg text-muted-foreground max-w-md animate-fade-in">
+              Discover meals cooked by neighbours who love what they make. From cloud kitchens to your door in 30–45 minutes.
             </p>
 
-            {/* Search CTA */}
-            <Link to="/browse" className="mt-6 w-full max-w-md flex items-center gap-3 rounded-2xl bg-background ring-1 ring-border px-4 h-12 text-sm text-muted-foreground shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-warm)] transition">
+            <Link to="/browse" className="mt-6 w-full max-w-md flex items-center gap-3 rounded-2xl bg-background ring-1 ring-border px-4 h-12 text-sm text-muted-foreground shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-warm)] hover:-translate-y-0.5 transition">
               <Search className="h-4 w-4 text-primary" /> Search biryani, dosa, paneer…
             </Link>
 
             <div className="mt-5 flex flex-wrap gap-3">
-              <Link to="/browse" className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-warm)] hover:opacity-95">
+              <Link to="/browse" className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-warm)] hover:opacity-95 hover-scale">
                 Order Now <ArrowRight className="h-4 w-4" />
               </Link>
-              <Link to="/auth" className="inline-flex items-center gap-2 rounded-xl bg-background ring-1 ring-border px-5 py-3 text-sm font-semibold hover:bg-secondary">
+              <Link to="/auth" className="inline-flex items-center gap-2 rounded-xl bg-background ring-1 ring-border px-5 py-3 text-sm font-semibold hover:bg-secondary hover-scale">
                 <ChefHat className="h-4 w-4" /> Become a cook
               </Link>
             </div>
           </div>
           <div className="relative">
-            <div className="aspect-square rounded-[2rem] overflow-hidden shadow-[var(--shadow-warm)] ring-1 ring-border">
-              <img src={heroFood} alt="Homemade thali" className="h-full w-full object-cover" />
+            <div className="aspect-square rounded-[2rem] overflow-hidden shadow-[var(--shadow-warm)] ring-1 ring-border animate-scale-in">
+              <img src={heroFood} alt="Homemade thali" className="h-full w-full object-cover hover:scale-105 transition duration-700" />
             </div>
           </div>
         </div>
@@ -94,8 +93,8 @@ function Index() {
       <section className="mx-auto max-w-6xl px-4 pt-8">
         <div className="grid sm:grid-cols-2 gap-4">
           <PromoCard
-            title="50% OFF first order"
-            sub="Use code DELIGO50 at checkout"
+            title="20% OFF your first order"
+            sub="Use code CLOUDBITES1 at checkout"
             chip="Welcome offer"
             color="from-primary to-accent"
           />
