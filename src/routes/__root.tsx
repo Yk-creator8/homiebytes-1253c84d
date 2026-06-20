@@ -15,6 +15,7 @@ import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/lib/auth-context";
+import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 
 function NotFoundComponent() {
   return (
