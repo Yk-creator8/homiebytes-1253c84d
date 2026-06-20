@@ -9,7 +9,7 @@ import { CUISINES } from "@/lib/cuisines";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/cook")({
-  head: () => ({ meta: [{ title: "Cook dashboard — Deligo" }] }),
+  head: () => ({ meta: [{ title: "Cook dashboard — CloudBites" }] }),
   component: CookDashboard,
 });
 
@@ -125,7 +125,7 @@ function CookDashboard() {
         <MenuPanel items={menuQ.data ?? []} loading={menuQ.isLoading} userId={user!.id} onChange={() => qc.invalidateQueries({ queryKey: ["cook-menu", user!.id] })} />
       </div>
 
-      <p className="mt-8 text-center text-xs text-muted-foreground">Delivery is arranged by you or a local partner. Deligo handles the orders, you handle the magic. ✨</p>
+      <p className="mt-8 text-center text-xs text-muted-foreground">Delivery is arranged by you or a local partner. CloudBites handles the orders, you handle the magic. ✨</p>
     </div>
   );
 }

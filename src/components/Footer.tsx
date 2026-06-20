@@ -10,7 +10,7 @@ export function Footer() {
             Fresh, homemade meals from neighbourhood cooks. Made with love, delivered with care.
           </p>
         </div>
-        <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} Deligo. All rights reserved.</p>
+        <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} CloudBites. All rights reserved.</p>
       </div>
     </footer>
   );

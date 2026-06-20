@@ -12,7 +12,7 @@ import { useFavorites } from "@/lib/favorites-store";
 import { useAuth } from "@/lib/auth-context";
 
 export const Route = createFileRoute("/food/$id")({
-  head: () => ({ meta: [{ title: "Dish details — Deligo" }] }),
+  head: () => ({ meta: [{ title: "Dish details — CloudBites" }] }),
   notFoundComponent: () => (
     <div className="mx-auto max-w-md py-24 text-center px-4">
       <h1 className="text-2xl font-bold">Dish not found</h1>
