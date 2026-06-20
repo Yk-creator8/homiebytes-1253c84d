@@ -138,7 +138,7 @@ function Index() {
         <Rail title="Top rated near you" icon={Flame} subtitle="Most loved by your neighbours" items={topRated} />
       )}
       {trending.length > 0 && (
-        <Rail title="New on Deligo" icon={Sparkles} subtitle="Fresh additions from local cooks" items={trending} />
+        <Rail title="New on CloudBites" icon={Sparkles} subtitle="Fresh additions from local cooks" items={trending} />
       )}
       {quick.length > 0 && (
         <Rail title="Ready in 30 min or less" icon={Clock} subtitle="Quick bites when you're hungry" items={quick} />
@@ -159,13 +159,13 @@ function Index() {
           <p className="text-center text-muted-foreground mt-2">Three simple steps to a homemade meal</p>
           <div className="mt-10 grid md:grid-cols-3 gap-6">
             {[
-              { icon: Utensils, title: "Choose your food", desc: "Browse fresh, homemade meals from cooks in your area." },
-              { icon: ShoppingBag, title: "Place your order", desc: "Add to cart, checkout in seconds." },
+              { icon: Utensils, title: "Choose your food", desc: "Browse fresh, homemade meals from cloud kitchens in your area." },
+              { icon: ShoppingBag, title: "Place your order", desc: "Add to cart, checkout in seconds with COD or UPI." },
               { icon: Bike, title: "Get it delivered", desc: "Warm and fresh at your doorstep in 30–45 minutes." },
             ].map((s, i) => {
               const Icon = s.icon;
               return (
-                <div key={i} className="relative rounded-2xl bg-card p-6 ring-1 ring-border shadow-[var(--shadow-card)]">
+                <div key={i} className="relative rounded-2xl bg-card p-6 ring-1 ring-border shadow-[var(--shadow-card)] hover:-translate-y-1 hover:shadow-[var(--shadow-warm)] transition">
                   <div className="absolute -top-3 -left-3 h-10 w-10 rounded-xl bg-primary text-primary-foreground font-bold inline-flex items-center justify-center shadow-[var(--shadow-warm)]">{i + 1}</div>
                   <Icon className="h-7 w-7 text-primary" />
                   <h3 className="mt-3 font-display font-semibold text-lg">{s.title}</h3>
@@ -179,14 +179,14 @@ function Index() {
 
       {/* Cook CTA */}
       <section className="mx-auto max-w-6xl px-4 py-16">
-        <div className="rounded-3xl p-8 md:p-12 text-primary-foreground relative overflow-hidden" style={{ background: "var(--gradient-warm)" }}>
+        <div className="rounded-3xl p-8 md:p-12 text-primary-foreground relative overflow-hidden hover:shadow-[var(--shadow-warm)] transition" style={{ background: "var(--gradient-warm)" }}>
           <div className="relative z-10 max-w-xl">
             <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-xs font-medium backdrop-blur">
               <ChefHat className="h-3.5 w-3.5" /> Earn from your kitchen
             </div>
             <h2 className="mt-4 font-display text-3xl md:text-4xl font-bold">Cook what you love. Earn what you deserve.</h2>
-            <p className="mt-3 opacity-90">Join Deligo as a home cook and share your recipes with neighbours. We handle orders, you handle the magic.</p>
-            <Link to="/auth" className="mt-6 inline-flex items-center gap-2 rounded-xl bg-background text-foreground px-5 py-3 text-sm font-semibold hover:opacity-95">
+            <p className="mt-3 opacity-90">Join CloudBites as a home cook for a one-time ₹99 joining fee and share your recipes with neighbours.</p>
+            <Link to="/auth" className="mt-6 inline-flex items-center gap-2 rounded-xl bg-background text-foreground px-5 py-3 text-sm font-semibold hover:opacity-95 hover-scale">
               Become a cook <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
