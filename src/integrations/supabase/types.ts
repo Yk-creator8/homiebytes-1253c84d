@@ -51,6 +51,8 @@ export type Database = {
           image_url: string | null
           is_available: boolean
           is_veg: boolean
+          lat: number | null
+          lng: number | null
           name: string
           prep_minutes: number
           price: number
@@ -66,6 +68,8 @@ export type Database = {
           image_url?: string | null
           is_available?: boolean
           is_veg?: boolean
+          lat?: number | null
+          lng?: number | null
           name: string
           prep_minutes?: number
           price: number
@@ -81,6 +85,8 @@ export type Database = {
           image_url?: string | null
           is_available?: boolean
           is_veg?: boolean
+          lat?: number | null
+          lng?: number | null
           name?: string
           prep_minutes?: number
           price?: number
@@ -136,10 +142,14 @@ export type Database = {
       orders: {
         Row: {
           cook_id: string
+          coupon_code: string | null
           created_at: string
           customer_id: string
           delivery_address: string | null
           delivery_fee: number
+          delivery_lat: number | null
+          delivery_lng: number | null
+          discount_amount: number
           id: string
           status: Database["public"]["Enums"]["order_status"]
           total: number
@@ -147,10 +157,14 @@ export type Database = {
         }
         Insert: {
           cook_id: string
+          coupon_code?: string | null
           created_at?: string
           customer_id: string
           delivery_address?: string | null
           delivery_fee?: number
+          delivery_lat?: number | null
+          delivery_lng?: number | null
+          discount_amount?: number
           id?: string
           status?: Database["public"]["Enums"]["order_status"]
           total: number
@@ -158,10 +172,14 @@ export type Database = {
         }
         Update: {
           cook_id?: string
+          coupon_code?: string | null
           created_at?: string
           customer_id?: string
           delivery_address?: string | null
           delivery_fee?: number
+          delivery_lat?: number | null
+          delivery_lng?: number | null
+          discount_amount?: number
           id?: string
           status?: Database["public"]["Enums"]["order_status"]
           total?: number
@@ -172,28 +190,43 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          cook_fee_paid: boolean
+          cook_fee_paid_at: string | null
           created_at: string
+          first_order_coupon_used: boolean
           full_name: string | null
           id: string
           is_verified: boolean
+          lat: number | null
+          lng: number | null
           location: string | null
           phone: string | null
         }
         Insert: {
           avatar_url?: string | null
+          cook_fee_paid?: boolean
+          cook_fee_paid_at?: string | null
           created_at?: string
+          first_order_coupon_used?: boolean
           full_name?: string | null
           id: string
           is_verified?: boolean
+          lat?: number | null
+          lng?: number | null
           location?: string | null
           phone?: string | null
         }
         Update: {
           avatar_url?: string | null
+          cook_fee_paid?: boolean
+          cook_fee_paid_at?: string | null
           created_at?: string
+          first_order_coupon_used?: boolean
           full_name?: string | null
           id?: string
           is_verified?: boolean
+          lat?: number | null
+          lng?: number | null
           location?: string | null
           phone?: string | null
         }
