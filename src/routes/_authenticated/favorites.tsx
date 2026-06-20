@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 
 export const Route = createFileRoute("/_authenticated/favorites")({
-  head: () => ({ meta: [{ title: "Your favorites — Deligo" }] }),
+  head: () => ({ meta: [{ title: "Your favorites — CloudBites" }] }),
   component: FavoritesPage,
 });
 

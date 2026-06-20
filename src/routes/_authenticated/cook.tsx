@@ -1,15 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ShieldCheck, Plus, Trash2, IndianRupee, ShoppingBag, TrendingUp, Check, X, Loader2, Upload, Power } from "lucide-react";
+import { ShieldCheck, Plus, Trash2, IndianRupee, ShoppingBag, TrendingUp, Check, X, Loader2, Upload, Power, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { uploadFoodImage, FOOD_FALLBACK_IMAGE } from "@/lib/storage";
 import { CUISINES } from "@/lib/cuisines";
 import { toast } from "sonner";
+import { CookFeeCheckout } from "@/components/CookFeeCheckout";
+import { COOK_JOINING_FEE_INR } from "@/lib/cook-fee.functions";
 
 export const Route = createFileRoute("/_authenticated/cook")({
-  head: () => ({ meta: [{ title: "Cook dashboard — Deligo" }] }),
+  head: () => ({ meta: [{ title: "Cook dashboard — CloudBites" }] }),
   component: CookDashboard,
 });
 
@@ -35,6 +37,22 @@ function CookDashboard() {
         <h1 className="font-display text-2xl font-bold">Cook access required</h1>
         <p className="mt-2 text-muted-foreground">This area is for home cooks. Switch your role to access the kitchen dashboard.</p>
         <Link to="/onboarding" className="mt-6 inline-flex rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground">Choose role</Link>
+      </div>
+    );
+  }
+
+  // Joining fee gate
+  if (!authLoading && role === "cook" && profile && !profile.cook_fee_paid) {
+    return (
+      <div className="mx-auto max-w-xl px-4 py-10 animate-fade-in">
+        <div className="rounded-3xl bg-card ring-1 ring-border p-6 md:p-8 shadow-[var(--shadow-warm)]">
+          <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 text-primary px-3 py-1.5 text-xs font-semibold">
+            <Sparkles className="h-3.5 w-3.5" /> Finish your cloud kitchen setup
+          </div>
+          <h1 className="mt-3 font-display text-2xl md:text-3xl font-bold">One-time joining fee · <span className="inline-flex items-center"><IndianRupee className="h-5 w-5" />{COOK_JOINING_FEE_INR}</span></h1>
+          <p className="mt-2 text-muted-foreground text-sm">Pay once to activate your cook dashboard, get verified, and start receiving orders.</p>
+          <div className="mt-6"><CookFeeCheckout onPaid={() => window.location.reload()} /></div>
+        </div>
       </div>
     );
   }
@@ -125,7 +143,7 @@ function CookDashboard() {
         <MenuPanel items={menuQ.data ?? []} loading={menuQ.isLoading} userId={user!.id} onChange={() => qc.invalidateQueries({ queryKey: ["cook-menu", user!.id] })} />
       </div>
 
-      <p className="mt-8 text-center text-xs text-muted-foreground">Delivery is arranged by you or a local partner. Deligo handles the orders, you handle the magic. ✨</p>
+      <p className="mt-8 text-center text-xs text-muted-foreground">Delivery is arranged by you or a local partner. CloudBites handles the orders, you handle the magic. ✨</p>
     </div>
   );
 }

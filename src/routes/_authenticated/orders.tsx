@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 
 export const Route = createFileRoute("/_authenticated/orders")({
-  head: () => ({ meta: [{ title: "Your orders — Deligo" }] }),
+  head: () => ({ meta: [{ title: "Your orders — CloudBites" }] }),
   component: Orders,
 });
 

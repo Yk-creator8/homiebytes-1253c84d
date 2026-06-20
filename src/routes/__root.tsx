@@ -15,6 +15,7 @@ import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/lib/auth-context";
+import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 
 function NotFoundComponent() {
   return (
@@ -52,9 +53,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Deligo — Fresh homemade food, delivered" },
+      { title: "CloudBites — Fresh homemade food, delivered" },
       { name: "description", content: "Order fresh homemade meals from cooks in your neighbourhood. Delight on the go." },
-      { property: "og:title", content: "Deligo — Fresh homemade food, delivered" },
+      { property: "og:title", content: "CloudBites — Fresh homemade food, delivered" },
       { property: "og:description", content: "Order fresh homemade meals from cooks in your neighbourhood." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -87,6 +88,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <div className="flex min-h-screen flex-col">
+          <PaymentTestModeBanner />
           <Header />
           <main className="flex-1"><Outlet /></main>
           <Footer />
