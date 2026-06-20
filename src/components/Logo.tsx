@@ -1,9 +1,9 @@
-import logoAsset from "@/assets/deligo-logo.png.asset.json";
+import logoAsset from "@/assets/cloudbites-mark.png.asset.json";
 
-export function Logo({ className = "h-9 w-9" }: { className?: string }) {
+export function Logo({ className = "h-10 w-10" }: { className?: string }) {
   return (
     <div className={`${className} flex items-center justify-center`}>
-      <img src={logoAsset.url} alt="Deligo" className="h-full w-full object-contain" />
+      <img src={logoAsset.url} alt="CloudBites" className="h-full w-full object-contain" />
     </div>
   );
 }
@@ -13,11 +13,13 @@ export function LogoWordmark() {
     <div className="flex items-center gap-2">
       <Logo />
       <div className="leading-none">
-        <div className="font-display text-xl font-bold tracking-tight">
-          <span className="text-foreground">Deli</span>
-          <span className="text-primary">go</span>
+        <div className="font-display text-xl font-extrabold tracking-tight">
+          <span className="text-foreground">Cloud</span>
+          <span className="text-primary">Bites</span>
         </div>
-        <div className="text-[10px] text-muted-foreground tracking-wide mt-0.5">delight on the go</div>
+        <div className="text-[10px] font-semibold text-muted-foreground tracking-[0.12em] mt-0.5">
+          GOOD FOOD · ANYTIME · ANYWHERE
+        </div>
       </div>
     </div>
   );
