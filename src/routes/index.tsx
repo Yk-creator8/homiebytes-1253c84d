@@ -9,8 +9,8 @@ import heroFood from "@/assets/hero-food.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Deligo — Fresh Homemade Food Near You" },
-      { name: "description", content: "Order delicious homemade meals from cooks in your neighbourhood. Delivery in 30–45 minutes." },
+      { title: "CloudBites — Good Food. Anytime. Anywhere." },
+      { name: "description", content: "Fresh homemade food from cloud kitchens near you. Get 20% off your first order with code CLOUDBITES1." },
     ],
   }),
   component: Index,
