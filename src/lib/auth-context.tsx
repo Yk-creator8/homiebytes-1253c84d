@@ -13,6 +13,11 @@ type Profile = {
   location: string | null;
   avatar_url: string | null;
   is_verified: boolean;
+  cook_fee_paid: boolean;
+  cook_fee_paid_at: string | null;
+  first_order_coupon_used: boolean;
+  lat: number | null;
+  lng: number | null;
 };
 
 type AuthCtx = {
