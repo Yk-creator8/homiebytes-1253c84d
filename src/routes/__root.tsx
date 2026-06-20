@@ -88,6 +88,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <div className="flex min-h-screen flex-col">
+          <PaymentTestModeBanner />
           <Header />
           <main className="flex-1"><Outlet /></main>
           <Footer />
