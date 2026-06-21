@@ -14,20 +14,35 @@ export const createCookFeeCheckout = createServerFn({ method: "POST" })
       const stripe = createStripeClient(data.environment);
       const { data: user } = await context.supabase.auth.getUser();
       const email = user.user?.email;
+
+      // Resolve the registered Stripe price by lookup_key (stable across sandbox/live).
+      const prices = await stripe.prices.list({ lookup_keys: ["cook_joining_fee_onetime"], limit: 1 });
+      if (!prices.data.length) throw new Error("Cook joining fee price not configured");
+      const price = prices.data[0];
+
+      // Resolve / create a Customer carrying userId metadata so later reads work.
+      let customerId: string;
+      const existing = await stripe.customers.search({
+        query: `metadata['userId']:'${context.userId}'`,
+        limit: 1,
+      }).catch(() => ({ data: [] as Array<{ id: string }> }));
+      if (existing.data.length) {
+        customerId = existing.data[0].id;
+      } else {
+        const created = await stripe.customers.create({
+          ...(email && { email }),
+          metadata: { userId: context.userId },
+        });
+        customerId = created.id;
+      }
+
       const session = await stripe.checkout.sessions.create({
-        line_items: [{
-          price_data: {
-            currency: "inr",
-            product_data: { name: "CloudBites Cook Joining Fee", description: "One-time cloud-kitchen onboarding fee" },
-            unit_amount: COOK_JOINING_FEE_INR * 100,
-          },
-          quantity: 1,
-        }],
+        line_items: [{ price: price.id, quantity: 1 }],
         mode: "payment",
         ui_mode: "embedded_page",
         return_url: data.returnUrl,
+        customer: customerId,
         payment_intent_data: { description: "CloudBites Cook Joining Fee" },
-        ...(email && { customer_email: email }),
         metadata: { userId: context.userId, kind: "cook_joining_fee" },
       });
       return { clientSecret: session.client_secret ?? "" };
