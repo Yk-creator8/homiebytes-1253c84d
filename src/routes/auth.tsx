@@ -34,7 +34,7 @@ function AuthPage() {
 
   useEffect(() => {
     if (!loading && user) {
-      navigate({ to: role ? (role === "cook" ? "/cook" : "/browse") : "/onboarding", replace: true });
+      navigate({ to: role === "cook" ? "/cook" : "/", replace: true });
     }
   }, [loading, user, role, navigate]);
 
