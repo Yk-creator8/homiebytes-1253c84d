@@ -53,9 +53,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "CloudBites — Fresh homemade food, delivered" },
+      { title: "HomieBytes — Fresh homemade food, delivered" },
       { name: "description", content: "Order fresh homemade meals from cooks in your neighbourhood. Delight on the go." },
-      { property: "og:title", content: "CloudBites — Fresh homemade food, delivered" },
+      { property: "og:title", content: "HomieBytes — Fresh homemade food, delivered" },
       { property: "og:description", content: "Order fresh homemade meals from cooks in your neighbourhood." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

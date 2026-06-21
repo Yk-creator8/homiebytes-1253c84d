@@ -9,7 +9,7 @@ import heroFood from "@/assets/hero-food.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "CloudBites — Good Food. Anytime. Anywhere." },
+      { title: "HomieBytes — Good Food. Anytime. Anywhere." },
       { name: "description", content: "Fresh homemade food from cloud kitchens near you. Get 20% off your first order with code CLOUDBITES1." },
     ],
   }),
@@ -138,7 +138,7 @@ function Index() {
         <Rail title="Top rated near you" icon={Flame} subtitle="Most loved by your neighbours" items={topRated} />
       )}
       {trending.length > 0 && (
-        <Rail title="New on CloudBites" icon={Sparkles} subtitle="Fresh additions from local cooks" items={trending} />
+        <Rail title="New on HomieBytes" icon={Sparkles} subtitle="Fresh additions from local cooks" items={trending} />
       )}
       {quick.length > 0 && (
         <Rail title="Ready in 30 min or less" icon={Clock} subtitle="Quick bites when you're hungry" items={quick} />
@@ -185,8 +185,8 @@ function Index() {
               <ChefHat className="h-3.5 w-3.5" /> Earn from your kitchen
             </div>
             <h2 className="mt-4 font-display text-3xl md:text-4xl font-bold">Cook what you love. Earn what you deserve.</h2>
-            <p className="mt-3 opacity-90">Join CloudBites as a home cook for a one-time ₹99 joining fee and share your recipes with neighbours.</p>
-            <Link to="/auth" className="mt-6 inline-flex items-center gap-2 rounded-xl bg-background text-foreground px-5 py-3 text-sm font-semibold hover:opacity-95 hover-scale">
+            <p className="mt-3 opacity-90">Join HomieBytes as a home cook — share a few details and your bank info, and we'll review your application within a day.</p>
+            <Link to="/onboarding" className="mt-6 inline-flex items-center gap-2 rounded-xl bg-background text-foreground px-5 py-3 text-sm font-semibold hover:opacity-95 hover-scale">
               Become a cook <ArrowRight className="h-4 w-4" />
             </Link>
           </div>

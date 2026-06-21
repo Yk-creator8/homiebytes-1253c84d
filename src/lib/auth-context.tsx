@@ -18,6 +18,14 @@ type Profile = {
   first_order_coupon_used: boolean;
   lat: number | null;
   lng: number | null;
+  dob: string | null;
+  address: string | null;
+  cloud_kitchen_name: string | null;
+  bank_account_name: string | null;
+  bank_account_number: string | null;
+  bank_ifsc: string | null;
+  cook_status: "pending" | "approved" | "rejected";
+  cook_submitted_at: string | null;
 };
 
 type AuthCtx = {

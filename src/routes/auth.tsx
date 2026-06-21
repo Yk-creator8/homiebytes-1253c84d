@@ -5,11 +5,11 @@ import { lovable } from "@/integrations/lovable/index";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
 import { LogoWordmark } from "@/components/Logo";
-import { Loader2, Mail, Phone, KeyRound, ArrowLeft, Sparkles } from "lucide-react";
+import { Loader2, Mail, Phone, ArrowLeft, Sparkles } from "lucide-react";
 import { z } from "zod";
 
 export const Route = createFileRoute("/auth")({
-  head: () => ({ meta: [{ title: "Sign in — CloudBites" }, { name: "description", content: "Sign in to CloudBites to order homemade food or start your cloud kitchen." }] }),
+  head: () => ({ meta: [{ title: "Sign in — HomieBytes" }, { name: "description", content: "Sign in to HomieBytes to order homemade food or start your cloud kitchen." }] }),
   component: AuthPage,
 });
 
@@ -17,7 +17,7 @@ const emailSchema = z.string().trim().email().max(255);
 const passwordSchema = z.string().min(6, "Min 6 characters").max(72);
 const phoneSchema = z.string().trim().regex(/^\+?[1-9]\d{7,14}$/, "Use international format e.g. +9198…");
 
-type Mode = "email" | "phone" | "magic";
+type Mode = "email" | "phone";
 
 function AuthPage() {
   const { user, role, loading } = useAuth();
@@ -34,7 +34,7 @@ function AuthPage() {
 
   useEffect(() => {
     if (!loading && user) {
-      navigate({ to: role ? (role === "cook" ? "/cook" : "/browse") : "/onboarding", replace: true });
+      navigate({ to: role === "cook" ? "/cook" : "/", replace: true });
     }
   }, [loading, user, role, navigate]);
 
@@ -47,7 +47,7 @@ function AuthPage() {
       if (isSignup) {
         const { error } = await supabase.auth.signUp({
           email: emailV, password: passwordV,
-          options: { data: { full_name: name.trim() || undefined }, emailRedirectTo: `${window.location.origin}/onboarding` },
+          options: { data: { full_name: name.trim() || undefined }, emailRedirectTo: `${window.location.origin}/` },
         });
         if (error) throw error;
         toast.success("Account created!");
@@ -87,25 +87,9 @@ function AuthPage() {
     } finally { setBusy(false); }
   };
 
-  const handleMagicLink = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setBusy(true);
-    try {
-      const v = emailSchema.parse(email);
-      const { error } = await supabase.auth.signInWithOtp({
-        email: v,
-        options: { emailRedirectTo: `${window.location.origin}/onboarding` },
-      });
-      if (error) throw error;
-      toast.success("Magic link sent — check your inbox");
-    } catch (err: any) {
-      toast.error(err.issues?.[0]?.message ?? err.message ?? "Could not send link");
-    } finally { setBusy(false); }
-  };
-
   const handleGoogle = async () => {
     setBusy(true);
-    const r = await lovable.auth.signInWithOAuth("google", { redirect_uri: `${window.location.origin}/onboarding` });
+    const r = await lovable.auth.signInWithOAuth("google", { redirect_uri: `${window.location.origin}/` });
     if (r.error) { toast.error(r.error.message || "Google sign-in failed"); setBusy(false); }
   };
 
@@ -119,12 +103,12 @@ function AuthPage() {
         <div className="flex items-center gap-2 text-xs font-semibold text-primary bg-primary/10 rounded-full px-3 py-1.5 w-fit mb-3">
           <Sparkles className="h-3.5 w-3.5" /> New users get 20% off · code CLOUDBITES1
         </div>
-        <h1 className="font-display text-2xl font-bold">Welcome to CloudBites</h1>
+        <h1 className="font-display text-2xl font-bold">Welcome to HomieBytes</h1>
         <p className="text-sm text-muted-foreground mt-1">Good food. Anytime. Anywhere.</p>
 
         {/* Mode tabs */}
-        <div className="mt-5 grid grid-cols-3 gap-1 p-1 rounded-xl bg-secondary/60 text-xs font-semibold">
-          {([["email", Mail, "Email"], ["phone", Phone, "Phone"], ["magic", KeyRound, "Magic"]] as const).map(([m, Icon, label]) => (
+        <div className="mt-5 grid grid-cols-2 gap-1 p-1 rounded-xl bg-secondary/60 text-xs font-semibold">
+          {([["email", Mail, "Email"], ["phone", Phone, "Phone"]] as const).map(([m, Icon, label]) => (
             <button key={m} onClick={() => { setMode(m); setStep("enter"); }} className={`inline-flex items-center justify-center gap-1.5 h-9 rounded-lg transition ${mode === m ? "bg-background text-foreground shadow-sm" : "text-muted-foreground"}`}>
               <Icon className="h-3.5 w-3.5" /> {label}
             </button>
@@ -168,15 +152,6 @@ function AuthPage() {
           </form>
         )}
 
-        {mode === "magic" && (
-          <form onSubmit={handleMagicLink} className="mt-4 space-y-3 animate-fade-in">
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="you@example.com" className="w-full h-11 rounded-xl bg-background ring-1 ring-border px-3 text-sm" />
-            <button disabled={busy} className="w-full h-11 rounded-xl bg-primary text-primary-foreground font-semibold inline-flex items-center justify-center gap-2 disabled:opacity-50">
-              {busy && <Loader2 className="h-4 w-4 animate-spin" />}Email me a magic link
-            </button>
-            <p className="text-[11px] text-muted-foreground text-center">No password needed. Click the link in your email to sign in.</p>
-          </form>
-        )}
 
         <div className="my-4 flex items-center gap-3 text-xs text-muted-foreground"><div className="h-px flex-1 bg-border" />or<div className="h-px flex-1 bg-border" /></div>
 

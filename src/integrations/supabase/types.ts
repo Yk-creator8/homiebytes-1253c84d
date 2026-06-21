@@ -189,10 +189,18 @@ export type Database = {
       }
       profiles: {
         Row: {
+          address: string | null
           avatar_url: string | null
+          bank_account_name: string | null
+          bank_account_number: string | null
+          bank_ifsc: string | null
+          cloud_kitchen_name: string | null
           cook_fee_paid: boolean
           cook_fee_paid_at: string | null
+          cook_status: Database["public"]["Enums"]["cook_status"]
+          cook_submitted_at: string | null
           created_at: string
+          dob: string | null
           first_order_coupon_used: boolean
           full_name: string | null
           id: string
@@ -203,10 +211,18 @@ export type Database = {
           phone: string | null
         }
         Insert: {
+          address?: string | null
           avatar_url?: string | null
+          bank_account_name?: string | null
+          bank_account_number?: string | null
+          bank_ifsc?: string | null
+          cloud_kitchen_name?: string | null
           cook_fee_paid?: boolean
           cook_fee_paid_at?: string | null
+          cook_status?: Database["public"]["Enums"]["cook_status"]
+          cook_submitted_at?: string | null
           created_at?: string
+          dob?: string | null
           first_order_coupon_used?: boolean
           full_name?: string | null
           id: string
@@ -217,10 +233,18 @@ export type Database = {
           phone?: string | null
         }
         Update: {
+          address?: string | null
           avatar_url?: string | null
+          bank_account_name?: string | null
+          bank_account_number?: string | null
+          bank_ifsc?: string | null
+          cloud_kitchen_name?: string | null
           cook_fee_paid?: boolean
           cook_fee_paid_at?: string | null
+          cook_status?: Database["public"]["Enums"]["cook_status"]
+          cook_submitted_at?: string | null
           created_at?: string
+          dob?: string | null
           first_order_coupon_used?: boolean
           full_name?: string | null
           id?: string
@@ -303,6 +327,7 @@ export type Database = {
     }
     Enums: {
       app_role: "customer" | "cook" | "admin"
+      cook_status: "pending" | "approved" | "rejected"
       order_status:
         | "placed"
         | "preparing"
@@ -438,6 +463,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["customer", "cook", "admin"],
+      cook_status: ["pending", "approved", "rejected"],
       order_status: [
         "placed",
         "preparing",

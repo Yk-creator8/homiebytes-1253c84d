@@ -11,7 +11,7 @@ import { CookFeeCheckout } from "@/components/CookFeeCheckout";
 import { COOK_JOINING_FEE_INR } from "@/lib/cook-fee.functions";
 
 export const Route = createFileRoute("/_authenticated/cook")({
-  head: () => ({ meta: [{ title: "Cook dashboard — CloudBites" }] }),
+  head: () => ({ meta: [{ title: "Cook dashboard — HomieBytes" }] }),
   component: CookDashboard,
 });
 
@@ -143,7 +143,7 @@ function CookDashboard() {
         <MenuPanel items={menuQ.data ?? []} loading={menuQ.isLoading} userId={user!.id} onChange={() => qc.invalidateQueries({ queryKey: ["cook-menu", user!.id] })} />
       </div>
 
-      <p className="mt-8 text-center text-xs text-muted-foreground">Delivery is arranged by you or a local partner. CloudBites handles the orders, you handle the magic. ✨</p>
+      <p className="mt-8 text-center text-xs text-muted-foreground">Delivery is arranged by you or a local partner. HomieBytes handles the orders, you handle the magic. ✨</p>
     </div>
   );
 }
@@ -292,9 +292,10 @@ function AddDishForm({ userId, onClose, onSaved }: { userId: string; onClose: ()
         availability,
         cuisine,
         prep_minutes: Math.max(5, Math.min(180, Number(prepMin) || 30)),
+        is_available: true,
       });
       if (error) throw error;
-      toast.success("Dish added to your menu");
+      toast.success("Dish published — now live for customers to order");
       onSaved();
     } catch (e: any) {
       toast.error(e.message ?? "Could not save dish");

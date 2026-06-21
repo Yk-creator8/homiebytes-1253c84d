@@ -7,9 +7,9 @@ import { FoodCard } from "@/components/FoodCard";
 export const Route = createFileRoute("/cooks/$id")({
   head: ({ params }) => ({
     meta: [
-      { title: "Home cook — CloudBites" },
-      { name: "description", content: "View this home cook's full menu, ratings, and reviews on CloudBites." },
-      { property: "og:title", content: "Home cook on CloudBites" },
+      { title: "Home cook — HomieBytes" },
+      { name: "description", content: "View this home cook's full menu, ratings, and reviews on HomieBytes." },
+      { property: "og:title", content: "Home cook on HomieBytes" },
     ],
   }),
   notFoundComponent: () => (

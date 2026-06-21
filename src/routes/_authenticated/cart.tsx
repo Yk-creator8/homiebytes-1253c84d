@@ -9,7 +9,7 @@ import { MapAddressPicker, type MapAddress } from "@/components/MapAddressPicker
 import { validateWelcomeCoupon, WELCOME_COUPON, WELCOME_DISCOUNT_PCT } from "@/lib/coupons.functions";
 
 export const Route = createFileRoute("/_authenticated/cart")({
-  head: () => ({ meta: [{ title: "Your cart — CloudBites" }] }),
+  head: () => ({ meta: [{ title: "Your cart — HomieBytes" }] }),
   component: Cart,
 });
 
@@ -141,7 +141,7 @@ function Cart() {
                 </button>
               </div>
             )}
-            {!coupon && <p className="text-[11px] text-muted-foreground mt-1.5">New to CloudBites? Try <span className="font-semibold text-primary">CLOUDBITES1</span> for {WELCOME_DISCOUNT_PCT}% off your first order.</p>}
+            {!coupon && <p className="text-[11px] text-muted-foreground mt-1.5">New to HomieBytes? Try <span className="font-semibold text-primary">CLOUDBITES1</span> for {WELCOME_DISCOUNT_PCT}% off your first order.</p>}
           </div>
 
           <div className="mt-4 space-y-2 text-sm">

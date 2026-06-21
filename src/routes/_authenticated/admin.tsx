@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { FOOD_FALLBACK_IMAGE } from "@/lib/storage";
 
 export const Route = createFileRoute("/_authenticated/admin")({
-  head: () => ({ meta: [{ title: "Admin — CloudBites" }] }),
+  head: () => ({ meta: [{ title: "Admin — HomieBytes" }] }),
   component: AdminDashboard,
 });
 
