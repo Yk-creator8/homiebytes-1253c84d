@@ -5,7 +5,7 @@ import { lovable } from "@/integrations/lovable/index";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
 import { LogoWordmark } from "@/components/Logo";
-import { Loader2, Mail, Phone, KeyRound, ArrowLeft, Sparkles } from "lucide-react";
+import { Loader2, Mail, Phone, ArrowLeft, Sparkles } from "lucide-react";
 import { z } from "zod";
 
 export const Route = createFileRoute("/auth")({
