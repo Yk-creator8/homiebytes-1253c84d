@@ -185,8 +185,8 @@ function Index() {
               <ChefHat className="h-3.5 w-3.5" /> Earn from your kitchen
             </div>
             <h2 className="mt-4 font-display text-3xl md:text-4xl font-bold">Cook what you love. Earn what you deserve.</h2>
-            <p className="mt-3 opacity-90">Join HomieBytes as a home cook for a one-time ₹99 joining fee and share your recipes with neighbours.</p>
-            <Link to="/auth" className="mt-6 inline-flex items-center gap-2 rounded-xl bg-background text-foreground px-5 py-3 text-sm font-semibold hover:opacity-95 hover-scale">
+            <p className="mt-3 opacity-90">Join HomieBytes as a home cook — share a few details and your bank info, and we'll review your application within a day.</p>
+            <Link to="/onboarding" className="mt-6 inline-flex items-center gap-2 rounded-xl bg-background text-foreground px-5 py-3 text-sm font-semibold hover:opacity-95 hover-scale">
               Become a cook <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
