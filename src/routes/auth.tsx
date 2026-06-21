@@ -47,7 +47,7 @@ function AuthPage() {
       if (isSignup) {
         const { error } = await supabase.auth.signUp({
           email: emailV, password: passwordV,
-          options: { data: { full_name: name.trim() || undefined }, emailRedirectTo: `${window.location.origin}/onboarding` },
+          options: { data: { full_name: name.trim() || undefined }, emailRedirectTo: `${window.location.origin}/` },
         });
         if (error) throw error;
         toast.success("Account created!");
