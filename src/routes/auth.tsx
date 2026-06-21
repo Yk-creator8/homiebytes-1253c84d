@@ -168,15 +168,6 @@ function AuthPage() {
           </form>
         )}
 
-        {mode === "magic" && (
-          <form onSubmit={handleMagicLink} className="mt-4 space-y-3 animate-fade-in">
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="you@example.com" className="w-full h-11 rounded-xl bg-background ring-1 ring-border px-3 text-sm" />
-            <button disabled={busy} className="w-full h-11 rounded-xl bg-primary text-primary-foreground font-semibold inline-flex items-center justify-center gap-2 disabled:opacity-50">
-              {busy && <Loader2 className="h-4 w-4 animate-spin" />}Email me a magic link
-            </button>
-            <p className="text-[11px] text-muted-foreground text-center">No password needed. Click the link in your email to sign in.</p>
-          </form>
-        )}
 
         <div className="my-4 flex items-center gap-3 text-xs text-muted-foreground"><div className="h-px flex-1 bg-border" />or<div className="h-px flex-1 bg-border" /></div>
 
