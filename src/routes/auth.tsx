@@ -87,25 +87,9 @@ function AuthPage() {
     } finally { setBusy(false); }
   };
 
-  const handleMagicLink = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setBusy(true);
-    try {
-      const v = emailSchema.parse(email);
-      const { error } = await supabase.auth.signInWithOtp({
-        email: v,
-        options: { emailRedirectTo: `${window.location.origin}/onboarding` },
-      });
-      if (error) throw error;
-      toast.success("Magic link sent — check your inbox");
-    } catch (err: any) {
-      toast.error(err.issues?.[0]?.message ?? err.message ?? "Could not send link");
-    } finally { setBusy(false); }
-  };
-
   const handleGoogle = async () => {
     setBusy(true);
-    const r = await lovable.auth.signInWithOAuth("google", { redirect_uri: `${window.location.origin}/onboarding` });
+    const r = await lovable.auth.signInWithOAuth("google", { redirect_uri: `${window.location.origin}/` });
     if (r.error) { toast.error(r.error.message || "Google sign-in failed"); setBusy(false); }
   };
 
