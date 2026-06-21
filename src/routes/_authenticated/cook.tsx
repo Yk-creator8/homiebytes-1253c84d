@@ -292,9 +292,10 @@ function AddDishForm({ userId, onClose, onSaved }: { userId: string; onClose: ()
         availability,
         cuisine,
         prep_minutes: Math.max(5, Math.min(180, Number(prepMin) || 30)),
+        is_available: true,
       });
       if (error) throw error;
-      toast.success("Dish added to your menu");
+      toast.success("Dish published — now live for customers to order");
       onSaved();
     } catch (e: any) {
       toast.error(e.message ?? "Could not save dish");
