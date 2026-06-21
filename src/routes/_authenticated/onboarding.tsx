@@ -8,7 +8,7 @@ import { CookFeeCheckout } from "@/components/CookFeeCheckout";
 import { COOK_JOINING_FEE_INR } from "@/lib/cook-fee.functions";
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
-  head: () => ({ meta: [{ title: "Get started — CloudBites" }] }),
+  head: () => ({ meta: [{ title: "Get started — HomieBytes" }] }),
   component: Onboarding,
 });
 
@@ -34,7 +34,7 @@ function Onboarding() {
       if (error) throw error;
       if (location.trim()) await supabase.from("profiles").update({ location: location.trim() }).eq("id", user.id);
       await refresh();
-      toast.success("Welcome to CloudBites!");
+      toast.success("Welcome to HomieBytes!");
       navigate({ to: "/browse", replace: true });
     } catch (e: any) { toast.error(e.message ?? "Could not save role"); }
     finally { setBusy(null); }
@@ -62,7 +62,7 @@ function Onboarding() {
             <Sparkles className="h-3.5 w-3.5" /> One-time onboarding
           </div>
           <h1 className="mt-3 font-display text-2xl md:text-3xl font-bold">Open your cloud kitchen</h1>
-          <p className="mt-2 text-muted-foreground text-sm">A one-time joining fee of <span className="font-bold text-foreground inline-flex items-center"><IndianRupee className="h-3.5 w-3.5" />{COOK_JOINING_FEE_INR}</span> covers your verification, profile setup, and lifetime access to the CloudBites cook dashboard.</p>
+          <p className="mt-2 text-muted-foreground text-sm">A one-time joining fee of <span className="font-bold text-foreground inline-flex items-center"><IndianRupee className="h-3.5 w-3.5" />{COOK_JOINING_FEE_INR}</span> covers your verification, profile setup, and lifetime access to the HomieBytes cook dashboard.</p>
 
           <ul className="mt-4 space-y-2 text-sm">
             {["Verified cook badge after onboarding", "Unlimited menu items & order tracking", "Direct customer payments (COD / UPI)"].map((t) => (
@@ -80,7 +80,7 @@ function Onboarding() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-12 animate-fade-in">
-      <h1 className="font-display text-3xl md:text-4xl font-bold text-center">How will you use CloudBites?</h1>
+      <h1 className="font-display text-3xl md:text-4xl font-bold text-center">How will you use HomieBytes?</h1>
       <p className="text-center text-muted-foreground mt-2">Good food. Anytime. Anywhere.</p>
 
       <div className="mt-6">

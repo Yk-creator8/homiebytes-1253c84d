@@ -10,7 +10,7 @@ import { CUISINES, CUISINE_EMOJI } from "@/lib/cuisines";
 export const Route = createFileRoute("/browse")({
   head: () => ({
     meta: [
-      { title: "Browse homemade food — CloudBites" },
+      { title: "Browse homemade food — HomieBytes" },
       { name: "description", content: "Browse fresh homemade meals from local cooks. Filter by cuisine, veg, price and rating." },
     ],
   }),

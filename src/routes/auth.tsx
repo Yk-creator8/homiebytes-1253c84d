@@ -9,7 +9,7 @@ import { Loader2, Mail, Phone, KeyRound, ArrowLeft, Sparkles } from "lucide-reac
 import { z } from "zod";
 
 export const Route = createFileRoute("/auth")({
-  head: () => ({ meta: [{ title: "Sign in — CloudBites" }, { name: "description", content: "Sign in to CloudBites to order homemade food or start your cloud kitchen." }] }),
+  head: () => ({ meta: [{ title: "Sign in — HomieBytes" }, { name: "description", content: "Sign in to HomieBytes to order homemade food or start your cloud kitchen." }] }),
   component: AuthPage,
 });
 
@@ -119,7 +119,7 @@ function AuthPage() {
         <div className="flex items-center gap-2 text-xs font-semibold text-primary bg-primary/10 rounded-full px-3 py-1.5 w-fit mb-3">
           <Sparkles className="h-3.5 w-3.5" /> New users get 20% off · code CLOUDBITES1
         </div>
-        <h1 className="font-display text-2xl font-bold">Welcome to CloudBites</h1>
+        <h1 className="font-display text-2xl font-bold">Welcome to HomieBytes</h1>
         <p className="text-sm text-muted-foreground mt-1">Good food. Anytime. Anywhere.</p>
 
         {/* Mode tabs */}

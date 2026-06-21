@@ -1,9 +1,9 @@
-import logoAsset from "@/assets/cloudbites-mark.png.asset.json";
+import logoAsset from "@/assets/homiebytes-mark.png.asset.json";
 
 export function Logo({ className = "h-10 w-10" }: { className?: string }) {
   return (
     <div className={`${className} flex items-center justify-center`}>
-      <img src={logoAsset.url} alt="CloudBites" className="h-full w-full object-contain" />
+      <img src={logoAsset.url} alt="HomieBytes" className="h-full w-full object-contain" />
     </div>
   );
 }

@@ -42,7 +42,7 @@ export const createCookFeeCheckout = createServerFn({ method: "POST" })
         ui_mode: "embedded_page",
         return_url: data.returnUrl,
         customer: customerId,
-        payment_intent_data: { description: "CloudBites Cook Joining Fee" },
+        payment_intent_data: { description: "HomieBytes Cook Joining Fee" },
         metadata: { userId: context.userId, kind: "cook_joining_fee" },
       });
       return { clientSecret: session.client_secret ?? "" };
