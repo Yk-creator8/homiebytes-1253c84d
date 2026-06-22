@@ -141,7 +141,9 @@ function FoodDetail() {
 
           <div className="mt-5 flex items-center gap-3">
             <div className="inline-flex items-center rounded-xl ring-1 ring-border bg-card">
-              <button onClick={() => setQty(Math.max(1, qty - 1))} className="h-11 w-11 inline-flex items-center justify-center hover:bg-secondary rounded-l-xl"><Minus className="h-4 w-4" /></button>
+              <button aria-label="Decrease quantity" onClick={() => setQty(Math.max(1, qty - 1))} className="h-11 w-11 inline-flex items-center justify-center hover:bg-secondary rounded-l-xl"><Minus className="h-4 w-4" /></button>
+              <span className="w-10 text-center font-semibold" aria-live="polite">{qty}</span>
+              <button aria-label="Increase quantity" onClick={() => setQty(qty + 1)} className="h-11 w-11 inline-flex items-center justify-center hover:bg-secondary rounded-r-xl"><Plus className="h-4 w-4" /></button>
               <span className="w-10 text-center font-semibold">{qty}</span>
               <button onClick={() => setQty(qty + 1)} className="h-11 w-11 inline-flex items-center justify-center hover:bg-secondary rounded-r-xl"><Plus className="h-4 w-4" /></button>
             </div>
