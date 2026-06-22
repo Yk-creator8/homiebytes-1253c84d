@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
 import { FOOD_FALLBACK_IMAGE } from "@/lib/storage";
+import { AdminCoupons } from "@/components/AdminCoupons";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({ meta: [{ title: "Admin — HomieBytes" }] }),
@@ -132,6 +133,8 @@ function AdminDashboard() {
           </div>
         )}
       </section>
+
+      <AdminCoupons />
 
       <section className="mt-6 rounded-2xl bg-card ring-1 ring-border p-5">
         <h2 className="font-display text-lg font-semibold mb-3">Recent orders</h2>
