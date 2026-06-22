@@ -43,7 +43,7 @@ export function Header() {
   const { user, profile, role, signOut } = useAuth();
   const navigate = useNavigate();
 
-  const nav = !user ? guestNav : role === "admin" ? adminNav : role === "cook" ? cookNav : customerNav;
+  const nav = !user ? guestNav : role === "admin" ? adminNav : role === "cook" ? cookNav : role === "rider" ? riderNav : customerNav;
   const initials = (profile?.full_name || user?.email || "U").trim().split(/\s+/).map((s) => s[0]).join("").slice(0, 2).toUpperCase();
 
   const handleSignOut = async () => {
