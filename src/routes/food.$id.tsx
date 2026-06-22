@@ -27,7 +27,7 @@ async function fetchFood(id: string) {
   const { data, error } = await supabase.from("food_items").select("*").eq("id", id).maybeSingle();
   if (error) throw error;
   if (!data) throw notFound();
-  const { data: cook } = await supabase.from("profiles").select("id,full_name,location,is_verified").eq("id", data.cook_id).maybeSingle();
+  const { data: cook } = await supabase.from("public_profiles").select("id,full_name,location,is_verified").eq("id", data.cook_id).maybeSingle();
   return { food: data, cook };
 }
 
@@ -41,11 +41,12 @@ async function fetchReviews(foodId: string) {
   const uids = [...new Set((data ?? []).map((r) => r.user_id))];
   let nameMap: Record<string, string> = {};
   if (uids.length) {
-    const { data: ps } = await supabase.from("profiles").select("id,full_name").in("id", uids);
+    const { data: ps } = await supabase.from("public_profiles").select("id,full_name").in("id", uids);
     nameMap = Object.fromEntries((ps ?? []).map((p) => [p.id, p.full_name ?? "Customer"]));
   }
   return (data ?? []).map((r) => ({ ...r, user_name: nameMap[r.user_id] ?? "Customer" }));
 }
+
 
 function FoodDetail() {
   const { id } = Route.useParams();

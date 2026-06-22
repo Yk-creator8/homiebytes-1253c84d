@@ -1,11 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { FoodCard, type FoodCardData } from "@/components/FoodCard";
 import { Slider } from "@/components/ui/slider";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2, Search, X } from "lucide-react";
 import { CUISINES, CUISINE_EMOJI } from "@/lib/cuisines";
+import { trackEvent } from "@/lib/analytics";
+
 
 export const Route = createFileRoute("/browse")({
   head: () => ({
@@ -30,9 +32,10 @@ async function fetchAllFoods(): Promise<FoodCardData[]> {
   const cookIds = [...new Set((data ?? []).map((d) => d.cook_id))];
   let cooks: Record<string, { full_name: string | null; location: string | null }> = {};
   if (cookIds.length) {
-    const { data: cs } = await supabase.from("profiles").select("id,full_name,location").in("id", cookIds);
+    const { data: cs } = await supabase.from("public_profiles").select("id,full_name,location").in("id", cookIds);
     cooks = Object.fromEntries((cs ?? []).map((c) => [c.id, { full_name: c.full_name, location: c.location }]));
   }
+
   return (data ?? []).map((f: any) => ({
     id: f.id, name: f.name, price: Number(f.price), image_url: f.image_url,
     is_veg: f.is_veg, rating: Number(f.rating), prep_minutes: f.prep_minutes,
@@ -50,6 +53,15 @@ function Browse() {
   const [query, setQuery] = useState("");
   const [cuisine, setCuisine] = useState<string | null>(null);
   const [sort, setSort] = useState<Sort>("rating");
+
+  useEffect(() => {
+    const q = query.trim();
+    if (!q) return;
+    const t = setTimeout(() => {
+      trackEvent("search", { search_term: q, cuisine: cuisine ?? undefined, veg });
+    }, 800);
+    return () => clearTimeout(t);
+  }, [query, cuisine, veg]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();

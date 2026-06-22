@@ -24,11 +24,12 @@ export const Route = createFileRoute("/cooks/$id")({
 
 async function fetchCook(id: string) {
   const { data: cook, error } = await supabase
-    .from("profiles")
+    .from("public_profiles")
     .select("id,full_name,location,avatar_url,is_verified,created_at")
     .eq("id", id)
     .maybeSingle();
   if (error) throw error;
+
   if (!cook) throw notFound();
   const { data: menu } = await supabase
     .from("food_items")

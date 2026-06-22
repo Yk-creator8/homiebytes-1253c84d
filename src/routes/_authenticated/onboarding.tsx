@@ -4,6 +4,8 @@ import { ChefHat, Loader2, ArrowLeft, ArrowRight, CheckCircle2, Sparkles, Mail }
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { trackEvent } from "@/lib/analytics";
+
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
   head: () => ({ meta: [{ title: "Become a Cook — HomieBytes" }] }),
@@ -99,6 +101,10 @@ function CookOnboarding() {
         if (rErr && !/duplicate/i.test(rErr.message)) throw rErr;
       }
       await refresh();
+      trackEvent("cook_application_submit", {
+        kitchen_name: kitchenName.trim(),
+        has_bank_details: true,
+      });
       setStep("submitted");
     } catch (e: any) {
       toast.error(e.message ?? "Could not submit");

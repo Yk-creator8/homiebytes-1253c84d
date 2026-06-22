@@ -4,9 +4,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
+import { trackEvent } from "@/lib/analytics";
 import { LogoWordmark } from "@/components/Logo";
 import { Loader2, Mail, Phone, ArrowLeft, Sparkles } from "lucide-react";
 import { z } from "zod";
+
 
 export const Route = createFileRoute("/auth")({
   head: () => ({ meta: [{ title: "Sign in — HomieBytes" }, { name: "description", content: "Sign in to HomieBytes to order homemade food or start your cloud kitchen." }] }),
@@ -50,10 +52,12 @@ function AuthPage() {
           options: { data: { full_name: name.trim() || undefined }, emailRedirectTo: `${window.location.origin}/` },
         });
         if (error) throw error;
+        trackEvent("sign_up", { method: "email" });
         toast.success("Account created!");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email: emailV, password: passwordV });
         if (error) throw error;
+        trackEvent("sign_in", { method: "email" });
         toast.success("Welcome back!");
       }
     } catch (err: any) {
@@ -62,6 +66,7 @@ function AuthPage() {
   };
 
   const handlePhoneStart = async (e: React.FormEvent) => {
+
     e.preventDefault();
     setBusy(true);
     try {
@@ -81,6 +86,7 @@ function AuthPage() {
     try {
       const { error } = await supabase.auth.verifyOtp({ phone: phoneSchema.parse(phone), token: otp.trim(), type: "sms" });
       if (error) throw error;
+      trackEvent("sign_in", { method: "phone" });
       toast.success("Signed in!");
     } catch (err: any) {
       toast.error(err.message ?? "Invalid OTP");
@@ -89,6 +95,7 @@ function AuthPage() {
 
   const handleGoogle = async () => {
     setBusy(true);
+    trackEvent("sign_in", { method: "google" });
     const r = await lovable.auth.signInWithOAuth("google", { redirect_uri: `${window.location.origin}/` });
     if (r.error) { toast.error(r.error.message || "Google sign-in failed"); setBusy(false); }
   };
