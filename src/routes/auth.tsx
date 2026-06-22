@@ -148,9 +148,9 @@ function AuthPage() {
         <p className="text-sm text-muted-foreground mt-1">Good food. Anytime. Anywhere.</p>
 
         {/* Mode tabs */}
-        <div className="mt-5 grid grid-cols-2 gap-1 p-1 rounded-xl bg-secondary/60 text-xs font-semibold">
-          {([["email", Mail, "Email"], ["phone", Phone, "Phone"]] as const).map(([m, Icon, label]) => (
-            <button key={m} onClick={() => { setMode(m); setStep("enter"); }} className={`inline-flex items-center justify-center gap-1.5 h-9 rounded-lg transition ${mode === m ? "bg-background text-foreground shadow-sm" : "text-muted-foreground"}`}>
+        <div className="mt-5 grid grid-cols-3 gap-1 p-1 rounded-xl bg-secondary/60 text-xs font-semibold">
+          {([["email", Mail, "Password"], ["email-otp", Mail, "Email OTP"], ["phone", Phone, "Phone"]] as const).map(([m, Icon, label]) => (
+            <button key={m} onClick={() => { setMode(m); setStep("enter"); setOtp(""); }} className={`inline-flex items-center justify-center gap-1.5 h-9 rounded-lg transition ${mode === m ? "bg-background text-foreground shadow-sm" : "text-muted-foreground"}`}>
               <Icon className="h-3.5 w-3.5" /> {label}
             </button>
           ))}
