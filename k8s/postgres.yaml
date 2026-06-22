@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: db
+  namespace: homiebytes
+spec:
+  serviceName: db
+  replicas: 1
+  selector: { matchLabels: { app: db } }
+  template:
+    metadata: { labels: { app: db } }
+    spec:
+      containers:
+        - name: postgres
+          image: supabase/postgres:15.6.1.139
+          ports: [{ containerPort: 5432 }]
+          env:
+            - { name: POSTGRES_PASSWORD, valueFrom: { secretKeyRef: { name: homiebytes-env, key: POSTGRES_PASSWORD } } }
+            - { name: POSTGRES_DB, value: postgres }
+          volumeMounts:
+            - { name: data, mountPath: /var/lib/postgresql/data }
+  volumeClaimTemplates:
+    - metadata: { name: data }
+      spec:
+        accessModes: [ReadWriteOnce]
+        resources: { requests: { storage: 20Gi } }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+  namespace: homiebytes
+spec:
+  selector: { app: db }
+  ports: [{ port: 5432, targetPort: 5432 }]
+  clusterIP: None

@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+  namespace: homiebytes
+spec:
+  replicas: 2
+  selector: { matchLabels: { app: app } }
+  template:
+    metadata: { labels: { app: app } }
+    spec:
+      containers:
+        - name: app
+          image: ghcr.io/YOUR_ORG/homiebytes:latest
+          ports: [{ containerPort: 3000 }]
+          envFrom:
+            - secretRef: { name: homiebytes-env }
+          readinessProbe:
+            httpGet: { path: /, port: 3000 }
+            initialDelaySeconds: 10
+          resources:
+            requests: { cpu: "100m", memory: "256Mi" }
+            limits:   { cpu: "1",    memory: "1Gi" }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app
+  namespace: homiebytes
+spec:
+  selector: { app: app }
+  ports: [{ port: 80, targetPort: 3000 }]
