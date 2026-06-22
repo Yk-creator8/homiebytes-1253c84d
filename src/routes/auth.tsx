@@ -4,9 +4,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
+import { trackEvent } from "@/lib/analytics";
 import { LogoWordmark } from "@/components/Logo";
 import { Loader2, Mail, Phone, ArrowLeft, Sparkles } from "lucide-react";
 import { z } from "zod";
+
 
 export const Route = createFileRoute("/auth")({
   head: () => ({ meta: [{ title: "Sign in — HomieBytes" }, { name: "description", content: "Sign in to HomieBytes to order homemade food or start your cloud kitchen." }] }),
