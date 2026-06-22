@@ -1,0 +1,14 @@
+node_modules
+.output
+.vinxi
+.tanstack
+dist
+.git
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+/mnt
+/tmp
+.lovable
