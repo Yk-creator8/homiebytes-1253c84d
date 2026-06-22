@@ -1,12 +1,14 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Minus, Plus, Trash2, ShoppingBag, Loader2, Tag, Check, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCart, cartStore, DELIVERY_FEE } from "@/lib/cart-store";
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { MapAddressPicker, type MapAddress } from "@/components/MapAddressPicker";
 import { validateWelcomeCoupon, WELCOME_COUPON, WELCOME_DISCOUNT_PCT } from "@/lib/coupons.functions";
+import { trackEvent } from "@/lib/analytics";
+
 
 export const Route = createFileRoute("/_authenticated/cart")({
   head: () => ({ meta: [{ title: "Your cart — HomieBytes" }] }),
