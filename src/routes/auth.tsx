@@ -93,6 +93,40 @@ function AuthPage() {
     } finally { setBusy(false); }
   };
 
+  const handleEmailOtpStart = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setBusy(true);
+    try {
+      const v = emailSchema.parse(email);
+      const { error } = await supabase.auth.signInWithOtp({
+        email: v,
+        options: { shouldCreateUser: true, emailRedirectTo: `${window.location.origin}/` },
+      });
+      if (error) throw error;
+      toast.success("OTP sent — check your inbox");
+      setStep("verify");
+    } catch (err: any) {
+      toast.error(err.issues?.[0]?.message ?? err.message ?? "Could not send OTP");
+    } finally { setBusy(false); }
+  };
+
+  const handleEmailOtpVerify = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setBusy(true);
+    try {
+      const { error } = await supabase.auth.verifyOtp({
+        email: emailSchema.parse(email),
+        token: otp.trim(),
+        type: "email",
+      });
+      if (error) throw error;
+      trackEvent("sign_in", { method: "email_otp" });
+      toast.success("Signed in!");
+    } catch (err: any) {
+      toast.error(err.message ?? "Invalid OTP");
+    } finally { setBusy(false); }
+  };
+
   const handleGoogle = async () => {
     setBusy(true);
     trackEvent("sign_in", { method: "google" });
