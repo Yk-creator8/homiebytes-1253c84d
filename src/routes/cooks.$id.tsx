@@ -10,7 +10,11 @@ export const Route = createFileRoute("/cooks/$id")({
       { title: "Home cook — HomieBytes" },
       { name: "description", content: "View this home cook's full menu, ratings, and reviews on HomieBytes." },
       { property: "og:title", content: "Home cook on HomieBytes" },
+      { property: "og:description", content: "Full menu, ratings, and reviews from a HomieBytes home cook." },
+      { property: "og:url", content: `https://homiebytes.lovable.app/cooks/${params.id}` },
+      { property: "og:type", content: "profile" },
     ],
+    links: [{ rel: "canonical", href: `https://homiebytes.lovable.app/cooks/${params.id}` }],
   }),
   notFoundComponent: () => (
     <div className="mx-auto max-w-md py-24 text-center px-4">

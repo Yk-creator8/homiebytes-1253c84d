@@ -12,7 +12,17 @@ import { useFavorites } from "@/lib/favorites-store";
 import { useAuth } from "@/lib/auth-context";
 
 export const Route = createFileRoute("/food/$id")({
-  head: () => ({ meta: [{ title: "Dish details — HomieBytes" }] }),
+  head: ({ params }) => ({
+    meta: [
+      { title: "Dish details — HomieBytes" },
+      { name: "description", content: "Order this homemade dish from a verified HomieBytes home cook." },
+      { property: "og:title", content: "Homemade dish on HomieBytes" },
+      { property: "og:description", content: "Fresh, homemade and delivered. Order on HomieBytes." },
+      { property: "og:url", content: `https://homiebytes.lovable.app/food/${params.id}` },
+      { property: "og:type", content: "product" },
+    ],
+    links: [{ rel: "canonical", href: `https://homiebytes.lovable.app/food/${params.id}` }],
+  }),
   notFoundComponent: () => (
     <div className="mx-auto max-w-md py-24 text-center px-4">
       <h1 className="text-2xl font-bold">Dish not found</h1>

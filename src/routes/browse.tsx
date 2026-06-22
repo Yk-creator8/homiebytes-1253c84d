@@ -14,7 +14,12 @@ export const Route = createFileRoute("/browse")({
     meta: [
       { title: "Browse homemade food — HomieBytes" },
       { name: "description", content: "Browse fresh homemade meals from local cooks. Filter by cuisine, veg, price and rating." },
+      { property: "og:title", content: "Browse homemade food — HomieBytes" },
+      { property: "og:description", content: "Filter by cuisine, veg, price and rating. Order from verified home cooks." },
+      { property: "og:url", content: "https://homiebytes.lovable.app/browse" },
+      { property: "og:type", content: "website" },
     ],
+    links: [{ rel: "canonical", href: "https://homiebytes.lovable.app/browse" }],
   }),
   component: Browse,
 });
