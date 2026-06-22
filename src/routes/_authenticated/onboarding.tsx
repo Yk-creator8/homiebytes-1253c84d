@@ -101,6 +101,10 @@ function CookOnboarding() {
         if (rErr && !/duplicate/i.test(rErr.message)) throw rErr;
       }
       await refresh();
+      trackEvent("cook_application_submit", {
+        kitchen_name: kitchenName.trim(),
+        has_bank_details: true,
+      });
       setStep("submitted");
     } catch (e: any) {
       toast.error(e.message ?? "Could not submit");
