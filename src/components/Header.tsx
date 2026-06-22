@@ -1,5 +1,5 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { ShoppingBag, Menu, ChefHat, Receipt, Home, LogOut, User as UserIcon, LogIn, Heart, Shield } from "lucide-react";
+import { ShoppingBag, Menu, ChefHat, Receipt, Home, LogOut, User as UserIcon, LogIn, Heart, Shield, Bike } from "lucide-react";
 import { LogoWordmark } from "./Logo";
 import { useCart } from "@/lib/cart-store";
 import { useAuth } from "@/lib/auth-context";
@@ -18,6 +18,11 @@ const cookNav = [
   { to: "/", label: "Home", icon: Home },
   { to: "/browse", label: "Marketplace", icon: ShoppingBag },
   { to: "/cook", label: "Cook Dashboard", icon: ChefHat },
+];
+
+const riderNav = [
+  { to: "/", label: "Home", icon: Home },
+  { to: "/rider", label: "Deliveries", icon: Bike },
 ];
 
 const adminNav = [
