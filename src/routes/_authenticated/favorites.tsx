@@ -25,10 +25,11 @@ function FavoritesPage() {
         .in("id", ids);
       const cookIds = [...new Set((items ?? []).map((i) => i.cook_id))];
       let cooks: Record<string, { full_name: string | null; location: string | null }> = {};
-      if (cookIds.length) {
-        const { data: cs } = await supabase.from("profiles").select("id,full_name,location").in("id", cookIds);
-        cooks = Object.fromEntries((cs ?? []).map((c) => [c.id, { full_name: c.full_name, location: c.location }]));
-      }
+  if (cookIds.length) {
+    const { data: cs } = await supabase.from("public_profiles").select("id,full_name,location").in("id", cookIds);
+    cooks = Object.fromEntries((cs ?? []).map((c) => [c.id, { full_name: c.full_name, location: c.location }]));
+  }
+
       return (items ?? []).map((f: any) => ({
         id: f.id, name: f.name, price: Number(f.price), image_url: f.image_url,
         is_veg: f.is_veg, rating: Number(f.rating), prep_minutes: f.prep_minutes,

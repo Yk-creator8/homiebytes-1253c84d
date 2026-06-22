@@ -27,9 +27,10 @@ async function fetchHomeFoods(): Promise<FoodCardData[]> {
   const cookIds = [...new Set((data ?? []).map((d) => d.cook_id))];
   let cooks: Record<string, { full_name: string | null; location: string | null }> = {};
   if (cookIds.length) {
-    const { data: cs } = await supabase.from("profiles").select("id,full_name,location").in("id", cookIds);
+    const { data: cs } = await supabase.from("public_profiles").select("id,full_name,location").in("id", cookIds);
     cooks = Object.fromEntries((cs ?? []).map((c) => [c.id, { full_name: c.full_name, location: c.location }]));
   }
+
   return (data ?? []).map((f: any) => ({
     id: f.id, name: f.name, price: Number(f.price), image_url: f.image_url,
     is_veg: f.is_veg, rating: Number(f.rating), prep_minutes: f.prep_minutes,
