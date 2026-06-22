@@ -15,6 +15,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as FoodIdRouteImport } from './routes/food.$id'
 import { Route as CooksIdRouteImport } from './routes/cooks.$id'
+import { Route as AuthenticatedRiderRouteImport } from './routes/_authenticated/rider'
 import { Route as AuthenticatedOrdersRouteImport } from './routes/_authenticated/orders'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as AuthenticatedFavoritesRouteImport } from './routes/_authenticated/favorites'
@@ -52,6 +53,11 @@ const CooksIdRoute = CooksIdRouteImport.update({
   id: '/cooks/$id',
   path: '/cooks/$id',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRiderRoute = AuthenticatedRiderRouteImport.update({
+  id: '/rider',
+  path: '/rider',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedOrdersRoute = AuthenticatedOrdersRouteImport.update({
   id: '/orders',
@@ -106,6 +112,7 @@ export interface FileRoutesByFullPath {
   '/favorites': typeof AuthenticatedFavoritesRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/orders': typeof AuthenticatedOrdersRoute
+  '/rider': typeof AuthenticatedRiderRoute
   '/cooks/$id': typeof CooksIdRoute
   '/food/$id': typeof FoodIdRoute
   '/api/public/payments/razorpay': typeof ApiPublicPaymentsRazorpayRoute
@@ -121,6 +128,7 @@ export interface FileRoutesByTo {
   '/favorites': typeof AuthenticatedFavoritesRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/orders': typeof AuthenticatedOrdersRoute
+  '/rider': typeof AuthenticatedRiderRoute
   '/cooks/$id': typeof CooksIdRoute
   '/food/$id': typeof FoodIdRoute
   '/api/public/payments/razorpay': typeof ApiPublicPaymentsRazorpayRoute
@@ -138,6 +146,7 @@ export interface FileRoutesById {
   '/_authenticated/favorites': typeof AuthenticatedFavoritesRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/orders': typeof AuthenticatedOrdersRoute
+  '/_authenticated/rider': typeof AuthenticatedRiderRoute
   '/cooks/$id': typeof CooksIdRoute
   '/food/$id': typeof FoodIdRoute
   '/api/public/payments/razorpay': typeof ApiPublicPaymentsRazorpayRoute
@@ -155,6 +164,7 @@ export interface FileRouteTypes {
     | '/favorites'
     | '/onboarding'
     | '/orders'
+    | '/rider'
     | '/cooks/$id'
     | '/food/$id'
     | '/api/public/payments/razorpay'
@@ -170,6 +180,7 @@ export interface FileRouteTypes {
     | '/favorites'
     | '/onboarding'
     | '/orders'
+    | '/rider'
     | '/cooks/$id'
     | '/food/$id'
     | '/api/public/payments/razorpay'
@@ -186,6 +197,7 @@ export interface FileRouteTypes {
     | '/_authenticated/favorites'
     | '/_authenticated/onboarding'
     | '/_authenticated/orders'
+    | '/_authenticated/rider'
     | '/cooks/$id'
     | '/food/$id'
     | '/api/public/payments/razorpay'
@@ -246,6 +258,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/cooks/$id'
       preLoaderRoute: typeof CooksIdRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/rider': {
+      id: '/_authenticated/rider'
+      path: '/rider'
+      fullPath: '/rider'
+      preLoaderRoute: typeof AuthenticatedRiderRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/orders': {
       id: '/_authenticated/orders'
@@ -313,6 +332,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedFavoritesRoute: typeof AuthenticatedFavoritesRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedOrdersRoute: typeof AuthenticatedOrdersRoute
+  AuthenticatedRiderRoute: typeof AuthenticatedRiderRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -322,6 +342,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedFavoritesRoute: AuthenticatedFavoritesRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedOrdersRoute: AuthenticatedOrdersRoute,
+  AuthenticatedRiderRoute: AuthenticatedRiderRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

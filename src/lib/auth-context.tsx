@@ -26,6 +26,9 @@ type Profile = {
   bank_ifsc: string | null;
   cook_status: "pending" | "approved" | "rejected";
   cook_submitted_at: string | null;
+  vehicle_type: string | null;
+  vehicle_number: string | null;
+  is_rider_active: boolean;
 };
 
 type AuthCtx = {
