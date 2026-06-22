@@ -4,6 +4,8 @@ import { ChefHat, Loader2, ArrowLeft, ArrowRight, CheckCircle2, Sparkles, Mail }
 import { useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { trackEvent } from "@/lib/analytics";
+
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
   head: () => ({ meta: [{ title: "Become a Cook — HomieBytes" }] }),
