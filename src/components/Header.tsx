@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/auth-context";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuLabel } from "@/components/ui/dropdown-menu";
+import { NotificationBell } from "./NotificationBell";
 
 const customerNav = [
   { to: "/", label: "Home", icon: Home },
@@ -84,6 +85,8 @@ export function Header() {
               )}
             </Link>
           )}
+
+          {user && <NotificationBell />}
 
           {user ? (
             <DropdownMenu>

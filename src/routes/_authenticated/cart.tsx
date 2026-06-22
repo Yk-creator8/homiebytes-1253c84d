@@ -47,9 +47,17 @@ function Cart() {
   const applyCoupon = async () => {
     setChecking(true);
     try {
-      const r = await validateWelcomeCoupon({ data: { code: couponInput } });
-      if (r.ok) { setCoupon({ code: r.code, pct: r.discountPct }); toast.success(`🎉 ${r.discountPct}% off applied!`); }
-      else { setCoupon(null); toast.error(r.reason); }
+      const r = await validateWelcomeCoupon({ data: { code: couponInput, subtotal } });
+      if (r.ok) {
+        // Convert flat discount into a percent of current subtotal so the existing per-cook pro-rata math stays consistent.
+        const pct = r.discountPct > 0
+          ? r.discountPct
+          : subtotal > 0 && r.discountFlat
+            ? Math.min(100, Math.round((r.discountFlat / subtotal) * 100))
+            : 0;
+        setCoupon({ code: r.code, pct });
+        toast.success(`🎉 ${r.code} applied!`);
+      } else { setCoupon(null); toast.error(r.reason); }
     } finally { setChecking(false); }
   };
 
