@@ -33,6 +33,17 @@ function Cart() {
   const discount = coupon ? Math.round((subtotal * coupon.pct) / 100) : 0;
   const total = Math.max(0, subtotal + totalDelivery - discount);
 
+  useEffect(() => {
+    if (items.length > 0) {
+      trackEvent("begin_checkout", {
+        value: total,
+        currency: "INR",
+        item_count: items.length,
+        coupon: coupon?.code,
+      });
+    }
+  }, []);
+
   const applyCoupon = async () => {
     setChecking(true);
     try {
