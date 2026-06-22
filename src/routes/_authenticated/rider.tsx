@@ -28,7 +28,7 @@ type OrderRow = {
   created_at: string;
   picked_up_at: string | null;
   delivered_at: string | null;
-  customer_id: string;
+  customer_id: string | null;
   cook_id: string;
   rider_id: string | null;
   order_items: { food_name: string; qty: number }[];
