@@ -1,5 +1,5 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { ShoppingBag, Menu, ChefHat, Receipt, Home, LogOut, User as UserIcon, LogIn, Heart, Shield, Bike } from "lucide-react";
+import { ShoppingBag, Menu, ChefHat, Receipt, Home, LogOut, User as UserIcon, LogIn, Heart, Shield, Bike, Bell } from "lucide-react";
 import { LogoWordmark } from "./Logo";
 import { useCart } from "@/lib/cart-store";
 import { useAuth } from "@/lib/auth-context";
@@ -105,6 +105,7 @@ export function Header() {
                 {role === "admin" && <DropdownMenuItem asChild><Link to="/admin"><Shield className="mr-2 h-4 w-4" />Admin</Link></DropdownMenuItem>}
                 {role === "rider" && <DropdownMenuItem asChild><Link to="/rider"><Bike className="mr-2 h-4 w-4" />Deliveries</Link></DropdownMenuItem>}
                 {!role && <DropdownMenuItem asChild><Link to="/onboarding"><UserIcon className="mr-2 h-4 w-4" />Choose role</Link></DropdownMenuItem>}
+                <DropdownMenuItem asChild><Link to="/notifications"><Bell className="mr-2 h-4 w-4" />Notification settings</Link></DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut}><LogOut className="mr-2 h-4 w-4" />Sign out</DropdownMenuItem>
               </DropdownMenuContent>

@@ -1,12 +1,12 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
 import { trackEvent } from "@/lib/analytics";
 import { LogoWordmark } from "@/components/Logo";
-import { Loader2, Mail, Phone, ArrowLeft, Sparkles } from "lucide-react";
+import { Loader2, Mail, Phone, ArrowLeft, Sparkles, RefreshCw } from "lucide-react";
 import { z } from "zod";
 
 
@@ -19,7 +19,22 @@ const emailSchema = z.string().trim().email().max(255);
 const passwordSchema = z.string().min(6, "Min 6 characters").max(72);
 const phoneSchema = z.string().trim().regex(/^\+?[1-9]\d{7,14}$/, "Use international format e.g. +9198…");
 
+const RESEND_COOLDOWN_SEC = 45;
+
 type Mode = "email" | "email-otp" | "phone";
+
+/** Map raw Supabase / Twilio auth errors to friendly user-facing text. */
+function friendlyOtpError(raw: string | undefined): string {
+  const m = (raw ?? "").toLowerCase();
+  if (!m) return "Something went wrong. Please try again.";
+  if (m.includes("expired") || m.includes("invalid") && m.includes("token")) return "That code is invalid or has expired. Tap Resend for a new one.";
+  if (m.includes("invalid") && (m.includes("otp") || m.includes("code"))) return "Incorrect code. Please double-check and try again.";
+  if (m.includes("rate") || m.includes("too many") || m.includes("seconds")) return "Too many attempts. Please wait a moment, then resend.";
+  if (m.includes("user not found")) return "No account matched that login. We'll create one when you verify.";
+  if (m.includes("sms") || m.includes("phone")) return "Couldn't send the SMS. Check your number and try again.";
+  if (m.includes("email")) return "Couldn't send the email. Check the address and try again.";
+  return raw ?? "Something went wrong.";
+}
 
 function AuthPage() {
   const { user, role, loading } = useAuth();
@@ -33,12 +48,34 @@ function AuthPage() {
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState<"enter" | "verify">("enter");
   const [busy, setBusy] = useState(false);
+  const [cooldown, setCooldown] = useState(0);
+  const [otpError, setOtpError] = useState<string | null>(null);
+  const cooldownRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     if (!loading && user) {
       navigate({ to: role === "cook" ? "/cook" : "/", replace: true });
     }
   }, [loading, user, role, navigate]);
+
+  // Cooldown ticker
+  useEffect(() => {
+    if (cooldown <= 0) {
+      if (cooldownRef.current) { clearInterval(cooldownRef.current); cooldownRef.current = null; }
+      return;
+    }
+    cooldownRef.current = setInterval(() => setCooldown((c) => Math.max(0, c - 1)), 1000);
+    return () => { if (cooldownRef.current) clearInterval(cooldownRef.current); };
+  }, [cooldown]);
+
+  const startCooldown = () => setCooldown(RESEND_COOLDOWN_SEC);
+
+  const resetOtpFlow = () => {
+    setStep("enter");
+    setOtp("");
+    setOtpError(null);
+    setCooldown(0);
+  };
 
   const handleEmailPassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,37 +102,41 @@ function AuthPage() {
     } finally { setBusy(false); }
   };
 
-  const handlePhoneStart = async (e: React.FormEvent) => {
-
-    e.preventDefault();
-    setBusy(true);
+  const sendPhoneOtp = async (isResend = false) => {
+    setBusy(true); setOtpError(null);
     try {
       const v = phoneSchema.parse(phone);
       const { error } = await supabase.auth.signInWithOtp({ phone: v });
       if (error) throw error;
-      toast.success("OTP sent — check your messages");
+      toast.success(isResend ? "New code sent" : "OTP sent — check your messages");
       setStep("verify");
+      startCooldown();
     } catch (err: any) {
-      toast.error(err.issues?.[0]?.message ?? err.message ?? "Could not send OTP");
+      const msg = err.issues?.[0]?.message ?? friendlyOtpError(err.message);
+      toast.error(msg);
+      setOtpError(msg);
     } finally { setBusy(false); }
   };
 
+  const handlePhoneStart = async (e: React.FormEvent) => { e.preventDefault(); await sendPhoneOtp(false); };
+
   const handlePhoneVerify = async (e: React.FormEvent) => {
     e.preventDefault();
-    setBusy(true);
+    setBusy(true); setOtpError(null);
     try {
       const { error } = await supabase.auth.verifyOtp({ phone: phoneSchema.parse(phone), token: otp.trim(), type: "sms" });
       if (error) throw error;
       trackEvent("sign_in", { method: "phone" });
       toast.success("Signed in!");
     } catch (err: any) {
-      toast.error(err.message ?? "Invalid OTP");
+      const msg = friendlyOtpError(err.message);
+      setOtpError(msg);
+      toast.error(msg);
     } finally { setBusy(false); }
   };
 
-  const handleEmailOtpStart = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setBusy(true);
+  const sendEmailOtp = async (isResend = false) => {
+    setBusy(true); setOtpError(null);
     try {
       const v = emailSchema.parse(email);
       const { error } = await supabase.auth.signInWithOtp({
@@ -103,16 +144,21 @@ function AuthPage() {
         options: { shouldCreateUser: true, emailRedirectTo: `${window.location.origin}/` },
       });
       if (error) throw error;
-      toast.success("OTP sent — check your inbox");
+      toast.success(isResend ? "New code sent to your inbox" : "OTP sent — check your inbox");
       setStep("verify");
+      startCooldown();
     } catch (err: any) {
-      toast.error(err.issues?.[0]?.message ?? err.message ?? "Could not send OTP");
+      const msg = err.issues?.[0]?.message ?? friendlyOtpError(err.message);
+      toast.error(msg);
+      setOtpError(msg);
     } finally { setBusy(false); }
   };
 
+  const handleEmailOtpStart = async (e: React.FormEvent) => { e.preventDefault(); await sendEmailOtp(false); };
+
   const handleEmailOtpVerify = async (e: React.FormEvent) => {
     e.preventDefault();
-    setBusy(true);
+    setBusy(true); setOtpError(null);
     try {
       const { error } = await supabase.auth.verifyOtp({
         email: emailSchema.parse(email),
@@ -123,9 +169,12 @@ function AuthPage() {
       trackEvent("sign_in", { method: "email_otp" });
       toast.success("Signed in!");
     } catch (err: any) {
-      toast.error(err.message ?? "Invalid OTP");
+      const msg = friendlyOtpError(err.message);
+      setOtpError(msg);
+      toast.error(msg);
     } finally { setBusy(false); }
   };
+
 
   const handleGoogle = async () => {
     setBusy(true);
@@ -150,7 +199,7 @@ function AuthPage() {
         {/* Mode tabs */}
         <div className="mt-5 grid grid-cols-3 gap-1 p-1 rounded-xl bg-secondary/60 text-xs font-semibold">
           {([["email", Mail, "Password"], ["email-otp", Mail, "Email OTP"], ["phone", Phone, "Phone"]] as const).map(([m, Icon, label]) => (
-            <button key={m} onClick={() => { setMode(m); setStep("enter"); setOtp(""); }} className={`inline-flex items-center justify-center gap-1.5 h-9 rounded-lg transition ${mode === m ? "bg-background text-foreground shadow-sm" : "text-muted-foreground"}`}>
+            <button key={m} onClick={() => { setMode(m); resetOtpFlow(); }} className={`inline-flex items-center justify-center gap-1.5 h-9 rounded-lg transition ${mode === m ? "bg-background text-foreground shadow-sm" : "text-muted-foreground"}`}>
               <Icon className="h-3.5 w-3.5" /> {label}
             </button>
           ))}
@@ -184,12 +233,19 @@ function AuthPage() {
 
         {mode === "email-otp" && step === "verify" && (
           <form onSubmit={handleEmailOtpVerify} className="mt-4 space-y-3 animate-fade-in">
-            <button type="button" onClick={() => setStep("enter")} className="inline-flex items-center text-xs text-muted-foreground"><ArrowLeft className="h-3.5 w-3.5 mr-1" /> Back</button>
+            <button type="button" onClick={resetOtpFlow} className="inline-flex items-center text-xs text-muted-foreground hover:text-foreground"><ArrowLeft className="h-3.5 w-3.5 mr-1" /> Use a different email</button>
             <div className="text-sm text-muted-foreground">Enter the 6-digit code sent to <span className="font-semibold text-foreground">{email}</span></div>
-            <input value={otp} onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))} required inputMode="numeric" placeholder="••••••" className="w-full h-12 text-center text-2xl font-bold tracking-[0.5em] rounded-xl bg-background ring-1 ring-border" />
+            <input value={otp} onChange={(e) => { setOtp(e.target.value.replace(/\D/g, "").slice(0, 6)); setOtpError(null); }} required inputMode="numeric" autoComplete="one-time-code" placeholder="••••••" className={`w-full h-12 text-center text-2xl font-bold tracking-[0.5em] rounded-xl bg-background ring-1 ${otpError ? "ring-destructive" : "ring-border"}`} />
+            {otpError && <p className="text-xs text-destructive font-medium">{otpError}</p>}
             <button disabled={busy || otp.length < 6} className="w-full h-11 rounded-xl bg-primary text-primary-foreground font-semibold inline-flex items-center justify-center gap-2 disabled:opacity-50">
               {busy && <Loader2 className="h-4 w-4 animate-spin" />}Verify & continue
             </button>
+            <div className="flex items-center justify-between text-xs">
+              <button type="button" disabled={busy || cooldown > 0} onClick={() => sendEmailOtp(true)} className="inline-flex items-center gap-1 font-semibold text-primary disabled:text-muted-foreground disabled:cursor-not-allowed">
+                <RefreshCw className="h-3 w-3" /> {cooldown > 0 ? `Resend in ${cooldown}s` : "Resend code"}
+              </button>
+              <button type="button" onClick={resetOtpFlow} className="text-muted-foreground hover:text-foreground">Start over</button>
+            </div>
           </form>
         )}
 
@@ -197,20 +253,27 @@ function AuthPage() {
           <form onSubmit={handlePhoneStart} className="mt-4 space-y-3 animate-fade-in">
             <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} required placeholder="+91 98765 43210" className="w-full h-11 rounded-xl bg-background ring-1 ring-border px-3 text-sm" />
             <button disabled={busy} className="w-full h-11 rounded-xl bg-primary text-primary-foreground font-semibold inline-flex items-center justify-center gap-2 disabled:opacity-50">
-              {busy && <Loader2 className="h-4 w-4 animate-spin" />}Send OTP
+              {busy && <Loader2 className="h-4 w-4 animate-spin" />}Send SMS code
             </button>
-            <p className="text-[11px] text-muted-foreground text-center">We'll text a 6-digit code. Free & easy — no password needed.</p>
+            <p className="text-[11px] text-muted-foreground text-center">We'll text a 6-digit code via Twilio. Free & easy — no password needed.</p>
           </form>
         )}
 
         {mode === "phone" && step === "verify" && (
           <form onSubmit={handlePhoneVerify} className="mt-4 space-y-3 animate-fade-in">
-            <button type="button" onClick={() => setStep("enter")} className="inline-flex items-center text-xs text-muted-foreground"><ArrowLeft className="h-3.5 w-3.5 mr-1" /> Back</button>
+            <button type="button" onClick={resetOtpFlow} className="inline-flex items-center text-xs text-muted-foreground hover:text-foreground"><ArrowLeft className="h-3.5 w-3.5 mr-1" /> Use a different number</button>
             <div className="text-sm text-muted-foreground">Enter the 6-digit code sent to <span className="font-semibold text-foreground">{phone}</span></div>
-            <input value={otp} onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))} required inputMode="numeric" placeholder="••••••" className="w-full h-12 text-center text-2xl font-bold tracking-[0.5em] rounded-xl bg-background ring-1 ring-border" />
-            <button disabled={busy || otp.length < 4} className="w-full h-11 rounded-xl bg-primary text-primary-foreground font-semibold inline-flex items-center justify-center gap-2 disabled:opacity-50">
+            <input value={otp} onChange={(e) => { setOtp(e.target.value.replace(/\D/g, "").slice(0, 6)); setOtpError(null); }} required inputMode="numeric" autoComplete="one-time-code" placeholder="••••••" className={`w-full h-12 text-center text-2xl font-bold tracking-[0.5em] rounded-xl bg-background ring-1 ${otpError ? "ring-destructive" : "ring-border"}`} />
+            {otpError && <p className="text-xs text-destructive font-medium">{otpError}</p>}
+            <button disabled={busy || otp.length < 6} className="w-full h-11 rounded-xl bg-primary text-primary-foreground font-semibold inline-flex items-center justify-center gap-2 disabled:opacity-50">
               {busy && <Loader2 className="h-4 w-4 animate-spin" />}Verify & continue
             </button>
+            <div className="flex items-center justify-between text-xs">
+              <button type="button" disabled={busy || cooldown > 0} onClick={() => sendPhoneOtp(true)} className="inline-flex items-center gap-1 font-semibold text-primary disabled:text-muted-foreground disabled:cursor-not-allowed">
+                <RefreshCw className="h-3 w-3" /> {cooldown > 0 ? `Resend in ${cooldown}s` : "Resend SMS"}
+              </button>
+              <button type="button" onClick={resetOtpFlow} className="text-muted-foreground hover:text-foreground">Start over</button>
+            </div>
           </form>
         )}
 

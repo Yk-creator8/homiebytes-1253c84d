@@ -18,6 +18,7 @@ import { Route as CooksIdRouteImport } from './routes/cooks.$id'
 import { Route as AuthenticatedRiderRouteImport } from './routes/_authenticated/rider'
 import { Route as AuthenticatedOrdersRouteImport } from './routes/_authenticated/orders'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
+import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authenticated/notifications'
 import { Route as AuthenticatedFavoritesRouteImport } from './routes/_authenticated/favorites'
 import { Route as AuthenticatedCookRouteImport } from './routes/_authenticated/cook'
 import { Route as AuthenticatedCartRouteImport } from './routes/_authenticated/cart'
@@ -69,6 +70,12 @@ const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
   path: '/onboarding',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedNotificationsRoute =
+  AuthenticatedNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedFavoritesRoute = AuthenticatedFavoritesRouteImport.update({
   id: '/favorites',
   path: '/favorites',
@@ -110,6 +117,7 @@ export interface FileRoutesByFullPath {
   '/cart': typeof AuthenticatedCartRoute
   '/cook': typeof AuthenticatedCookRoute
   '/favorites': typeof AuthenticatedFavoritesRoute
+  '/notifications': typeof AuthenticatedNotificationsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/orders': typeof AuthenticatedOrdersRoute
   '/rider': typeof AuthenticatedRiderRoute
@@ -126,6 +134,7 @@ export interface FileRoutesByTo {
   '/cart': typeof AuthenticatedCartRoute
   '/cook': typeof AuthenticatedCookRoute
   '/favorites': typeof AuthenticatedFavoritesRoute
+  '/notifications': typeof AuthenticatedNotificationsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/orders': typeof AuthenticatedOrdersRoute
   '/rider': typeof AuthenticatedRiderRoute
@@ -144,6 +153,7 @@ export interface FileRoutesById {
   '/_authenticated/cart': typeof AuthenticatedCartRoute
   '/_authenticated/cook': typeof AuthenticatedCookRoute
   '/_authenticated/favorites': typeof AuthenticatedFavoritesRoute
+  '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/orders': typeof AuthenticatedOrdersRoute
   '/_authenticated/rider': typeof AuthenticatedRiderRoute
@@ -162,6 +172,7 @@ export interface FileRouteTypes {
     | '/cart'
     | '/cook'
     | '/favorites'
+    | '/notifications'
     | '/onboarding'
     | '/orders'
     | '/rider'
@@ -178,6 +189,7 @@ export interface FileRouteTypes {
     | '/cart'
     | '/cook'
     | '/favorites'
+    | '/notifications'
     | '/onboarding'
     | '/orders'
     | '/rider'
@@ -195,6 +207,7 @@ export interface FileRouteTypes {
     | '/_authenticated/cart'
     | '/_authenticated/cook'
     | '/_authenticated/favorites'
+    | '/_authenticated/notifications'
     | '/_authenticated/onboarding'
     | '/_authenticated/orders'
     | '/_authenticated/rider'
@@ -280,6 +293,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOnboardingRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/notifications': {
+      id: '/_authenticated/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof AuthenticatedNotificationsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/favorites': {
       id: '/_authenticated/favorites'
       path: '/favorites'
@@ -330,6 +350,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedCartRoute: typeof AuthenticatedCartRoute
   AuthenticatedCookRoute: typeof AuthenticatedCookRoute
   AuthenticatedFavoritesRoute: typeof AuthenticatedFavoritesRoute
+  AuthenticatedNotificationsRoute: typeof AuthenticatedNotificationsRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedOrdersRoute: typeof AuthenticatedOrdersRoute
   AuthenticatedRiderRoute: typeof AuthenticatedRiderRoute
@@ -340,6 +361,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCartRoute: AuthenticatedCartRoute,
   AuthenticatedCookRoute: AuthenticatedCookRoute,
   AuthenticatedFavoritesRoute: AuthenticatedFavoritesRoute,
+  AuthenticatedNotificationsRoute: AuthenticatedNotificationsRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedOrdersRoute: AuthenticatedOrdersRoute,
   AuthenticatedRiderRoute: AuthenticatedRiderRoute,
