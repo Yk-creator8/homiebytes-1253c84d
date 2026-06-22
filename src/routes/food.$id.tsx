@@ -144,8 +144,6 @@ function FoodDetail() {
               <button aria-label="Decrease quantity" onClick={() => setQty(Math.max(1, qty - 1))} className="h-11 w-11 inline-flex items-center justify-center hover:bg-secondary rounded-l-xl"><Minus className="h-4 w-4" /></button>
               <span className="w-10 text-center font-semibold" aria-live="polite">{qty}</span>
               <button aria-label="Increase quantity" onClick={() => setQty(qty + 1)} className="h-11 w-11 inline-flex items-center justify-center hover:bg-secondary rounded-r-xl"><Plus className="h-4 w-4" /></button>
-              <span className="w-10 text-center font-semibold">{qty}</span>
-              <button onClick={() => setQty(qty + 1)} className="h-11 w-11 inline-flex items-center justify-center hover:bg-secondary rounded-r-xl"><Plus className="h-4 w-4" /></button>
             </div>
             <button onClick={addToCart} className="flex-1 h-11 rounded-xl bg-background ring-1 ring-border font-semibold hover:bg-secondary">Add to cart</button>
           </div>
