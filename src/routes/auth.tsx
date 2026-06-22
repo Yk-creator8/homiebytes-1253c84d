@@ -86,6 +86,7 @@ function AuthPage() {
     try {
       const { error } = await supabase.auth.verifyOtp({ phone: phoneSchema.parse(phone), token: otp.trim(), type: "sms" });
       if (error) throw error;
+      trackEvent("sign_in", { method: "phone" });
       toast.success("Signed in!");
     } catch (err: any) {
       toast.error(err.message ?? "Invalid OTP");
@@ -94,6 +95,7 @@ function AuthPage() {
 
   const handleGoogle = async () => {
     setBusy(true);
+    trackEvent("sign_in", { method: "google" });
     const r = await lovable.auth.signInWithOAuth("google", { redirect_uri: `${window.location.origin}/` });
     if (r.error) { toast.error(r.error.message || "Google sign-in failed"); setBusy(false); }
   };
