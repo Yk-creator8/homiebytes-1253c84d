@@ -19,7 +19,7 @@ const emailSchema = z.string().trim().email().max(255);
 const passwordSchema = z.string().min(6, "Min 6 characters").max(72);
 const phoneSchema = z.string().trim().regex(/^\+?[1-9]\d{7,14}$/, "Use international format e.g. +9198…");
 
-type Mode = "email" | "phone";
+type Mode = "email" | "email-otp" | "phone";
 
 function AuthPage() {
   const { user, role, loading } = useAuth();
@@ -93,6 +93,40 @@ function AuthPage() {
     } finally { setBusy(false); }
   };
 
+  const handleEmailOtpStart = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setBusy(true);
+    try {
+      const v = emailSchema.parse(email);
+      const { error } = await supabase.auth.signInWithOtp({
+        email: v,
+        options: { shouldCreateUser: true, emailRedirectTo: `${window.location.origin}/` },
+      });
+      if (error) throw error;
+      toast.success("OTP sent — check your inbox");
+      setStep("verify");
+    } catch (err: any) {
+      toast.error(err.issues?.[0]?.message ?? err.message ?? "Could not send OTP");
+    } finally { setBusy(false); }
+  };
+
+  const handleEmailOtpVerify = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setBusy(true);
+    try {
+      const { error } = await supabase.auth.verifyOtp({
+        email: emailSchema.parse(email),
+        token: otp.trim(),
+        type: "email",
+      });
+      if (error) throw error;
+      trackEvent("sign_in", { method: "email_otp" });
+      toast.success("Signed in!");
+    } catch (err: any) {
+      toast.error(err.message ?? "Invalid OTP");
+    } finally { setBusy(false); }
+  };
+
   const handleGoogle = async () => {
     setBusy(true);
     trackEvent("sign_in", { method: "google" });
@@ -114,9 +148,9 @@ function AuthPage() {
         <p className="text-sm text-muted-foreground mt-1">Good food. Anytime. Anywhere.</p>
 
         {/* Mode tabs */}
-        <div className="mt-5 grid grid-cols-2 gap-1 p-1 rounded-xl bg-secondary/60 text-xs font-semibold">
-          {([["email", Mail, "Email"], ["phone", Phone, "Phone"]] as const).map(([m, Icon, label]) => (
-            <button key={m} onClick={() => { setMode(m); setStep("enter"); }} className={`inline-flex items-center justify-center gap-1.5 h-9 rounded-lg transition ${mode === m ? "bg-background text-foreground shadow-sm" : "text-muted-foreground"}`}>
+        <div className="mt-5 grid grid-cols-3 gap-1 p-1 rounded-xl bg-secondary/60 text-xs font-semibold">
+          {([["email", Mail, "Password"], ["email-otp", Mail, "Email OTP"], ["phone", Phone, "Phone"]] as const).map(([m, Icon, label]) => (
+            <button key={m} onClick={() => { setMode(m); setStep("enter"); setOtp(""); }} className={`inline-flex items-center justify-center gap-1.5 h-9 rounded-lg transition ${mode === m ? "bg-background text-foreground shadow-sm" : "text-muted-foreground"}`}>
               <Icon className="h-3.5 w-3.5" /> {label}
             </button>
           ))}
@@ -134,6 +168,27 @@ function AuthPage() {
             </button>
             <button type="button" onClick={() => setIsSignup(!isSignup)} className="w-full text-sm text-muted-foreground hover:text-foreground">
               {isSignup ? "Have an account? Sign in" : "New here? Create account"}
+            </button>
+          </form>
+        )}
+
+        {mode === "email-otp" && step === "enter" && (
+          <form onSubmit={handleEmailOtpStart} className="mt-4 space-y-3 animate-fade-in">
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="you@example.com" className="w-full h-11 rounded-xl bg-background ring-1 ring-border px-3 text-sm" />
+            <button disabled={busy} className="w-full h-11 rounded-xl bg-primary text-primary-foreground font-semibold inline-flex items-center justify-center gap-2 disabled:opacity-50">
+              {busy && <Loader2 className="h-4 w-4 animate-spin" />}Send OTP to email
+            </button>
+            <p className="text-[11px] text-muted-foreground text-center">We'll email a 6-digit code. No password needed.</p>
+          </form>
+        )}
+
+        {mode === "email-otp" && step === "verify" && (
+          <form onSubmit={handleEmailOtpVerify} className="mt-4 space-y-3 animate-fade-in">
+            <button type="button" onClick={() => setStep("enter")} className="inline-flex items-center text-xs text-muted-foreground"><ArrowLeft className="h-3.5 w-3.5 mr-1" /> Back</button>
+            <div className="text-sm text-muted-foreground">Enter the 6-digit code sent to <span className="font-semibold text-foreground">{email}</span></div>
+            <input value={otp} onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))} required inputMode="numeric" placeholder="••••••" className="w-full h-12 text-center text-2xl font-bold tracking-[0.5em] rounded-xl bg-background ring-1 ring-border" />
+            <button disabled={busy || otp.length < 6} className="w-full h-11 rounded-xl bg-primary text-primary-foreground font-semibold inline-flex items-center justify-center gap-2 disabled:opacity-50">
+              {busy && <Loader2 className="h-4 w-4 animate-spin" />}Verify & continue
             </button>
           </form>
         )}
