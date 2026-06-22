@@ -78,10 +78,11 @@ function CookDashboard() {
       if (error) throw error;
       const custIds = [...new Set((data ?? []).map((o) => o.customer_id))];
       const custMap: Record<string, string> = {};
-      if (custIds.length) {
-        const { data: cs } = await supabase.from("profiles").select("id,full_name").in("id", custIds);
-        (cs ?? []).forEach((c) => { custMap[c.id] = c.full_name ?? "Customer"; });
-      }
+  if (custIds.length) {
+    const { data: cs } = await supabase.from("public_profiles").select("id,full_name").in("id", custIds);
+    (cs ?? []).forEach((c) => { if (c.id) custMap[c.id] = c.full_name ?? "Customer"; });
+  }
+
       return (data ?? []).map((o: any) => ({ ...o, customer_name: custMap[o.customer_id] ?? "Customer", total: Number(o.total) }));
     },
     enabled: !!user,
