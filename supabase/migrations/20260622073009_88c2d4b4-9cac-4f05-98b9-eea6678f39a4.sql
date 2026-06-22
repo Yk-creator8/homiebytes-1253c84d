@@ -1,0 +1,1 @@
+ALTER TABLE public.food_items DROP COLUMN IF EXISTS lat, DROP COLUMN IF EXISTS lng;

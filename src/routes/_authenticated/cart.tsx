@@ -71,6 +71,8 @@ function Cart() {
           delivery_lat: addr.lat, delivery_lng: addr.lng,
           coupon_code: coupon?.code ?? null,
           discount_amount: cookDiscount,
+          payment_provider: "cod",
+          payment_status: "pending",
         }).select().single();
         if (error) throw error;
         const lines = cookItems.map((i) => ({

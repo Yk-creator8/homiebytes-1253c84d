@@ -51,8 +51,6 @@ export type Database = {
           image_url: string | null
           is_available: boolean
           is_veg: boolean
-          lat: number | null
-          lng: number | null
           name: string
           prep_minutes: number
           price: number
@@ -68,8 +66,6 @@ export type Database = {
           image_url?: string | null
           is_available?: boolean
           is_veg?: boolean
-          lat?: number | null
-          lng?: number | null
           name: string
           prep_minutes?: number
           price: number
@@ -85,8 +81,6 @@ export type Database = {
           image_url?: string | null
           is_available?: boolean
           is_veg?: boolean
-          lat?: number | null
-          lng?: number | null
           name?: string
           prep_minutes?: number
           price?: number
