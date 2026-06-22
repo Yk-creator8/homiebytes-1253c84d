@@ -85,6 +85,13 @@ function Cart() {
         await supabase.from("profiles").update({ first_order_coupon_used: true }).eq("id", user.id);
       }
       cartStore.clear();
+      trackEvent("purchase", {
+        value: total,
+        currency: "INR",
+        item_count: items.length,
+        transaction_id: user.id,
+        coupon: coupon?.code,
+      });
       toast.success(cookCount > 1 ? `${cookCount} orders placed!` : "Order placed!");
       navigate({ to: "/orders" });
     } catch (e: any) { toast.error(e.message ?? "Could not place order"); }
