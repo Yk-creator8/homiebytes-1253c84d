@@ -52,10 +52,12 @@ function AuthPage() {
           options: { data: { full_name: name.trim() || undefined }, emailRedirectTo: `${window.location.origin}/` },
         });
         if (error) throw error;
+        trackEvent("sign_up", { method: "email" });
         toast.success("Account created!");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email: emailV, password: passwordV });
         if (error) throw error;
+        trackEvent("sign_in", { method: "email" });
         toast.success("Welcome back!");
       }
     } catch (err: any) {
@@ -64,6 +66,7 @@ function AuthPage() {
   };
 
   const handlePhoneStart = async (e: React.FormEvent) => {
+
     e.preventDefault();
     setBusy(true);
     try {
