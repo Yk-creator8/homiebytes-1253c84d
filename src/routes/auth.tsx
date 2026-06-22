@@ -1,12 +1,12 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
 import { trackEvent } from "@/lib/analytics";
 import { LogoWordmark } from "@/components/Logo";
-import { Loader2, Mail, Phone, ArrowLeft, Sparkles } from "lucide-react";
+import { Loader2, Mail, Phone, ArrowLeft, Sparkles, RefreshCw } from "lucide-react";
 import { z } from "zod";
 
 
@@ -19,7 +19,22 @@ const emailSchema = z.string().trim().email().max(255);
 const passwordSchema = z.string().min(6, "Min 6 characters").max(72);
 const phoneSchema = z.string().trim().regex(/^\+?[1-9]\d{7,14}$/, "Use international format e.g. +9198…");
 
+const RESEND_COOLDOWN_SEC = 45;
+
 type Mode = "email" | "email-otp" | "phone";
+
+/** Map raw Supabase / Twilio auth errors to friendly user-facing text. */
+function friendlyOtpError(raw: string | undefined): string {
+  const m = (raw ?? "").toLowerCase();
+  if (!m) return "Something went wrong. Please try again.";
+  if (m.includes("expired") || m.includes("invalid") && m.includes("token")) return "That code is invalid or has expired. Tap Resend for a new one.";
+  if (m.includes("invalid") && (m.includes("otp") || m.includes("code"))) return "Incorrect code. Please double-check and try again.";
+  if (m.includes("rate") || m.includes("too many") || m.includes("seconds")) return "Too many attempts. Please wait a moment, then resend.";
+  if (m.includes("user not found")) return "No account matched that login. We'll create one when you verify.";
+  if (m.includes("sms") || m.includes("phone")) return "Couldn't send the SMS. Check your number and try again.";
+  if (m.includes("email")) return "Couldn't send the email. Check the address and try again.";
+  return raw ?? "Something went wrong.";
+}
 
 function AuthPage() {
   const { user, role, loading } = useAuth();
@@ -33,12 +48,34 @@ function AuthPage() {
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState<"enter" | "verify">("enter");
   const [busy, setBusy] = useState(false);
+  const [cooldown, setCooldown] = useState(0);
+  const [otpError, setOtpError] = useState<string | null>(null);
+  const cooldownRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     if (!loading && user) {
       navigate({ to: role === "cook" ? "/cook" : "/", replace: true });
     }
   }, [loading, user, role, navigate]);
+
+  // Cooldown ticker
+  useEffect(() => {
+    if (cooldown <= 0) {
+      if (cooldownRef.current) { clearInterval(cooldownRef.current); cooldownRef.current = null; }
+      return;
+    }
+    cooldownRef.current = setInterval(() => setCooldown((c) => Math.max(0, c - 1)), 1000);
+    return () => { if (cooldownRef.current) clearInterval(cooldownRef.current); };
+  }, [cooldown]);
+
+  const startCooldown = () => setCooldown(RESEND_COOLDOWN_SEC);
+
+  const resetOtpFlow = () => {
+    setStep("enter");
+    setOtp("");
+    setOtpError(null);
+    setCooldown(0);
+  };
 
   const handleEmailPassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,37 +102,41 @@ function AuthPage() {
     } finally { setBusy(false); }
   };
 
-  const handlePhoneStart = async (e: React.FormEvent) => {
-
-    e.preventDefault();
-    setBusy(true);
+  const sendPhoneOtp = async (isResend = false) => {
+    setBusy(true); setOtpError(null);
     try {
       const v = phoneSchema.parse(phone);
       const { error } = await supabase.auth.signInWithOtp({ phone: v });
       if (error) throw error;
-      toast.success("OTP sent — check your messages");
+      toast.success(isResend ? "New code sent" : "OTP sent — check your messages");
       setStep("verify");
+      startCooldown();
     } catch (err: any) {
-      toast.error(err.issues?.[0]?.message ?? err.message ?? "Could not send OTP");
+      const msg = err.issues?.[0]?.message ?? friendlyOtpError(err.message);
+      toast.error(msg);
+      setOtpError(msg);
     } finally { setBusy(false); }
   };
 
+  const handlePhoneStart = async (e: React.FormEvent) => { e.preventDefault(); await sendPhoneOtp(false); };
+
   const handlePhoneVerify = async (e: React.FormEvent) => {
     e.preventDefault();
-    setBusy(true);
+    setBusy(true); setOtpError(null);
     try {
       const { error } = await supabase.auth.verifyOtp({ phone: phoneSchema.parse(phone), token: otp.trim(), type: "sms" });
       if (error) throw error;
       trackEvent("sign_in", { method: "phone" });
       toast.success("Signed in!");
     } catch (err: any) {
-      toast.error(err.message ?? "Invalid OTP");
+      const msg = friendlyOtpError(err.message);
+      setOtpError(msg);
+      toast.error(msg);
     } finally { setBusy(false); }
   };
 
-  const handleEmailOtpStart = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setBusy(true);
+  const sendEmailOtp = async (isResend = false) => {
+    setBusy(true); setOtpError(null);
     try {
       const v = emailSchema.parse(email);
       const { error } = await supabase.auth.signInWithOtp({
@@ -103,16 +144,21 @@ function AuthPage() {
         options: { shouldCreateUser: true, emailRedirectTo: `${window.location.origin}/` },
       });
       if (error) throw error;
-      toast.success("OTP sent — check your inbox");
+      toast.success(isResend ? "New code sent to your inbox" : "OTP sent — check your inbox");
       setStep("verify");
+      startCooldown();
     } catch (err: any) {
-      toast.error(err.issues?.[0]?.message ?? err.message ?? "Could not send OTP");
+      const msg = err.issues?.[0]?.message ?? friendlyOtpError(err.message);
+      toast.error(msg);
+      setOtpError(msg);
     } finally { setBusy(false); }
   };
 
+  const handleEmailOtpStart = async (e: React.FormEvent) => { e.preventDefault(); await sendEmailOtp(false); };
+
   const handleEmailOtpVerify = async (e: React.FormEvent) => {
     e.preventDefault();
-    setBusy(true);
+    setBusy(true); setOtpError(null);
     try {
       const { error } = await supabase.auth.verifyOtp({
         email: emailSchema.parse(email),
@@ -123,9 +169,12 @@ function AuthPage() {
       trackEvent("sign_in", { method: "email_otp" });
       toast.success("Signed in!");
     } catch (err: any) {
-      toast.error(err.message ?? "Invalid OTP");
+      const msg = friendlyOtpError(err.message);
+      setOtpError(msg);
+      toast.error(msg);
     } finally { setBusy(false); }
   };
+
 
   const handleGoogle = async () => {
     setBusy(true);
