@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from "react";
+import { trackEvent } from "./analytics";
 
 export type CartItem = {
   foodId: string;
@@ -8,6 +9,7 @@ export type CartItem = {
   image: string;
   qty: number;
 };
+
 
 const STORAGE_KEY = "deligo-cart-v2";
 let items: CartItem[] = [];
