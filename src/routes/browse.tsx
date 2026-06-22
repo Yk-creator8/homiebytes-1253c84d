@@ -53,6 +53,15 @@ function Browse() {
   const [cuisine, setCuisine] = useState<string | null>(null);
   const [sort, setSort] = useState<Sort>("rating");
 
+  useEffect(() => {
+    const q = query.trim();
+    if (!q) return;
+    const t = setTimeout(() => {
+      trackEvent("search", { search_term: q, cuisine: cuisine ?? undefined, veg });
+    }, 800);
+    return () => clearTimeout(t);
+  }, [query, cuisine, veg]);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     let list = foods.filter((f) => {
