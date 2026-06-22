@@ -151,6 +151,15 @@ export type Database = {
           delivery_lng: number | null
           discount_amount: number
           id: string
+          paid_at: string | null
+          payment_amount: number | null
+          payment_currency: string
+          payment_failure_reason: string | null
+          payment_provider: string
+          payment_status: Database["public"]["Enums"]["payment_status"]
+          razorpay_order_id: string | null
+          razorpay_payment_id: string | null
+          razorpay_signature: string | null
           status: Database["public"]["Enums"]["order_status"]
           total: number
           updated_at: string
@@ -166,6 +175,15 @@ export type Database = {
           delivery_lng?: number | null
           discount_amount?: number
           id?: string
+          paid_at?: string | null
+          payment_amount?: number | null
+          payment_currency?: string
+          payment_failure_reason?: string | null
+          payment_provider?: string
+          payment_status?: Database["public"]["Enums"]["payment_status"]
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
+          razorpay_signature?: string | null
           status?: Database["public"]["Enums"]["order_status"]
           total: number
           updated_at?: string
@@ -181,9 +199,51 @@ export type Database = {
           delivery_lng?: number | null
           discount_amount?: number
           id?: string
+          paid_at?: string | null
+          payment_amount?: number | null
+          payment_currency?: string
+          payment_failure_reason?: string | null
+          payment_provider?: string
+          payment_status?: Database["public"]["Enums"]["payment_status"]
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
+          razorpay_signature?: string | null
           status?: Database["public"]["Enums"]["order_status"]
           total?: number
           updated_at?: string
+        }
+        Relationships: []
+      }
+      payment_webhook_events: {
+        Row: {
+          created_at: string
+          error: string | null
+          event_id: string
+          event_type: string
+          id: string
+          payload: Json
+          processed_at: string | null
+          provider: string
+        }
+        Insert: {
+          created_at?: string
+          error?: string | null
+          event_id: string
+          event_type: string
+          id?: string
+          payload: Json
+          processed_at?: string | null
+          provider: string
+        }
+        Update: {
+          created_at?: string
+          error?: string | null
+          event_id?: string
+          event_type?: string
+          id?: string
+          payload?: Json
+          processed_at?: string | null
+          provider?: string
         }
         Relationships: []
       }
@@ -364,6 +424,7 @@ export type Database = {
         | "out_for_delivery"
         | "delivered"
         | "rejected"
+      payment_status: "pending" | "paid" | "failed" | "refunded"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -501,6 +562,7 @@ export const Constants = {
         "delivered",
         "rejected",
       ],
+      payment_status: ["pending", "paid", "failed", "refunded"],
     },
   },
 } as const
