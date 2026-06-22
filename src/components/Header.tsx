@@ -74,7 +74,7 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
-          {(role !== "cook" && role !== "admin") && (
+          {(role !== "cook" && role !== "admin" && role !== "rider") && (
             <Link to="/cart" className="relative inline-flex items-center justify-center h-10 w-10 rounded-xl bg-secondary hover:bg-secondary/80 transition">
               <ShoppingBag className="h-5 w-5" />
               {count > 0 && (
