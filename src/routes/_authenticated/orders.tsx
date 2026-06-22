@@ -35,9 +35,10 @@ async function fetchOrders(uid: string): Promise<OrderRow[]> {
   const cookIds = [...new Set((data ?? []).map((o) => o.cook_id))];
   const cookMap: Record<string, { full_name: string | null; location: string | null }> = {};
   if (cookIds.length) {
-    const { data: cs } = await supabase.from("profiles").select("id,full_name,location").in("id", cookIds);
+    const { data: cs } = await supabase.from("public_profiles").select("id,full_name,location").in("id", cookIds);
     (cs ?? []).forEach((c) => { cookMap[c.id] = { full_name: c.full_name, location: c.location }; });
   }
+
   return (data ?? []).map((o: any) => ({ ...o, total: Number(o.total), delivery_fee: Number(o.delivery_fee), cook: cookMap[o.cook_id] ?? null }));
 }
 
