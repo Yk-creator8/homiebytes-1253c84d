@@ -11,11 +11,13 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { loadGoogleAnalytics, trackPageView } from "../lib/analytics";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/lib/auth-context";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
+
 
 function NotFoundComponent() {
   return (
