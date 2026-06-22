@@ -19,7 +19,7 @@ const emailSchema = z.string().trim().email().max(255);
 const passwordSchema = z.string().min(6, "Min 6 characters").max(72);
 const phoneSchema = z.string().trim().regex(/^\+?[1-9]\d{7,14}$/, "Use international format e.g. +9198…");
 
-type Mode = "email" | "phone";
+type Mode = "email" | "email-otp" | "phone";
 
 function AuthPage() {
   const { user, role, loading } = useAuth();
