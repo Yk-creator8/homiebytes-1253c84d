@@ -186,14 +186,18 @@ function RiderHome({ user, profile, qc }: { user: { id: string }; profile: any; 
   const availableQ = useQuery({
     queryKey: ["rider-available"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("orders")
-        .select("id,status,total,delivery_fee,delivery_address,delivery_lat,delivery_lng,created_at,customer_id,cook_id,rider_id,picked_up_at,delivered_at,order_items(food_name,qty)")
-        .eq("status", "ready")
-        .is("rider_id", null)
-        .order("created_at", { ascending: true });
+      const { data, error } = await supabase.rpc("get_available_pickups");
       if (error) throw error;
-      return (data ?? []).map((o) => ({ ...o, total: Number(o.total), delivery_fee: Number(o.delivery_fee) })) as OrderRow[];
+      return (data ?? []).map((o: any) => ({
+        ...o,
+        total: Number(o.total),
+        delivery_fee: Number(o.delivery_fee),
+        customer_id: null,
+        rider_id: null,
+        picked_up_at: null,
+        delivered_at: null,
+        order_items: Array.isArray(o.items) ? o.items : [],
+      })) as OrderRow[];
     },
     refetchInterval: onDuty ? 15000 : false,
     enabled: onDuty,
