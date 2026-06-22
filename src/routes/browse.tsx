@@ -1,11 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { FoodCard, type FoodCardData } from "@/components/FoodCard";
 import { Slider } from "@/components/ui/slider";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2, Search, X } from "lucide-react";
 import { CUISINES, CUISINE_EMOJI } from "@/lib/cuisines";
+import { trackEvent } from "@/lib/analytics";
+
 
 export const Route = createFileRoute("/browse")({
   head: () => ({
