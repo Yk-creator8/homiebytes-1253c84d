@@ -86,6 +86,19 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+
+  useEffect(() => {
+    loadGoogleAnalytics();
+    trackPageView(window.location.pathname + window.location.search, document.title);
+
+    const unsubscribe = router.subscribe("onResolved", ({ toLocation }) => {
+      trackPageView(toLocation.pathname + toLocation.search, document.title);
+    });
+
+    return () => unsubscribe();
+  }, [router]);
+
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
@@ -100,3 +113,4 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
+
