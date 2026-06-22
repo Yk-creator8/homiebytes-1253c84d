@@ -8,6 +8,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
+import { notifyOrderStatusChange } from "@/lib/notifications.functions";
 
 export const Route = createFileRoute("/_authenticated/rider")({
   head: () => ({ meta: [{ title: "Delivery dashboard — HomieBytes" }] }),
@@ -240,6 +241,7 @@ function RiderHome({ user, profile, qc }: { user: { id: string }; profile: any; 
       .is("rider_id", null);
     if (error) return toast.error(error.message);
     toast.success("Order claimed — head to the kitchen!");
+    notifyOrderStatusChange({ data: { orderId, status: "out_for_delivery" } }).catch(() => {});
     qc.invalidateQueries({ queryKey: ["rider-available"] });
     qc.invalidateQueries({ queryKey: ["rider-mine", user.id] });
   };
@@ -261,6 +263,7 @@ function RiderHome({ user, profile, qc }: { user: { id: string }; profile: any; 
       .eq("id", orderId);
     if (error) return toast.error(error.message);
     toast.success("Delivered! 🎉");
+    notifyOrderStatusChange({ data: { orderId, status: "delivered" } }).catch(() => {});
     qc.invalidateQueries({ queryKey: ["rider-mine", user.id] });
   };
 
