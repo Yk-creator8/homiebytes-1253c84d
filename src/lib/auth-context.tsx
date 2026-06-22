@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useRouter } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 
-export type AppRole = "customer" | "cook" | "admin";
+export type AppRole = "customer" | "cook" | "admin" | "rider";
 
 type Profile = {
   id: string;
@@ -26,6 +26,9 @@ type Profile = {
   bank_ifsc: string | null;
   cook_status: "pending" | "approved" | "rejected";
   cook_submitted_at: string | null;
+  vehicle_type: string | null;
+  vehicle_number: string | null;
+  is_rider_active: boolean;
 };
 
 type AuthCtx = {

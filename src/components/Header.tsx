@@ -1,5 +1,5 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { ShoppingBag, Menu, ChefHat, Receipt, Home, LogOut, User as UserIcon, LogIn, Heart, Shield } from "lucide-react";
+import { ShoppingBag, Menu, ChefHat, Receipt, Home, LogOut, User as UserIcon, LogIn, Heart, Shield, Bike } from "lucide-react";
 import { LogoWordmark } from "./Logo";
 import { useCart } from "@/lib/cart-store";
 import { useAuth } from "@/lib/auth-context";
@@ -20,6 +20,11 @@ const cookNav = [
   { to: "/cook", label: "Cook Dashboard", icon: ChefHat },
 ];
 
+const riderNav = [
+  { to: "/", label: "Home", icon: Home },
+  { to: "/rider", label: "Deliveries", icon: Bike },
+];
+
 const adminNav = [
   { to: "/", label: "Home", icon: Home },
   { to: "/browse", label: "Browse", icon: ShoppingBag },
@@ -38,7 +43,7 @@ export function Header() {
   const { user, profile, role, signOut } = useAuth();
   const navigate = useNavigate();
 
-  const nav = !user ? guestNav : role === "admin" ? adminNav : role === "cook" ? cookNav : customerNav;
+  const nav = !user ? guestNav : role === "admin" ? adminNav : role === "cook" ? cookNav : role === "rider" ? riderNav : customerNav;
   const initials = (profile?.full_name || user?.email || "U").trim().split(/\s+/).map((s) => s[0]).join("").slice(0, 2).toUpperCase();
 
   const handleSignOut = async () => {
@@ -69,7 +74,7 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
-          {(role !== "cook" && role !== "admin") && (
+          {(role !== "cook" && role !== "admin" && role !== "rider") && (
             <Link to="/cart" className="relative inline-flex items-center justify-center h-10 w-10 rounded-xl bg-secondary hover:bg-secondary/80 transition">
               <ShoppingBag className="h-5 w-5" />
               {count > 0 && (
@@ -95,6 +100,7 @@ export function Header() {
                 {role === "customer" && <DropdownMenuItem asChild><Link to="/orders"><Receipt className="mr-2 h-4 w-4" />My orders</Link></DropdownMenuItem>}
                 {role === "cook" && <DropdownMenuItem asChild><Link to="/cook"><ChefHat className="mr-2 h-4 w-4" />Cook dashboard</Link></DropdownMenuItem>}
                 {role === "admin" && <DropdownMenuItem asChild><Link to="/admin"><Shield className="mr-2 h-4 w-4" />Admin</Link></DropdownMenuItem>}
+                {role === "rider" && <DropdownMenuItem asChild><Link to="/rider"><Bike className="mr-2 h-4 w-4" />Deliveries</Link></DropdownMenuItem>}
                 {!role && <DropdownMenuItem asChild><Link to="/onboarding"><UserIcon className="mr-2 h-4 w-4" />Choose role</Link></DropdownMenuItem>}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut}><LogOut className="mr-2 h-4 w-4" />Sign out</DropdownMenuItem>

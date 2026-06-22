@@ -139,6 +139,7 @@ export type Database = {
           coupon_code: string | null
           created_at: string
           customer_id: string
+          delivered_at: string | null
           delivery_address: string | null
           delivery_fee: number
           delivery_lat: number | null
@@ -151,9 +152,14 @@ export type Database = {
           payment_failure_reason: string | null
           payment_provider: string
           payment_status: Database["public"]["Enums"]["payment_status"]
+          picked_up_at: string | null
           razorpay_order_id: string | null
           razorpay_payment_id: string | null
           razorpay_signature: string | null
+          rider_id: string | null
+          rider_lat: number | null
+          rider_lng: number | null
+          rider_location_updated_at: string | null
           status: Database["public"]["Enums"]["order_status"]
           total: number
           updated_at: string
@@ -163,6 +169,7 @@ export type Database = {
           coupon_code?: string | null
           created_at?: string
           customer_id: string
+          delivered_at?: string | null
           delivery_address?: string | null
           delivery_fee?: number
           delivery_lat?: number | null
@@ -175,9 +182,14 @@ export type Database = {
           payment_failure_reason?: string | null
           payment_provider?: string
           payment_status?: Database["public"]["Enums"]["payment_status"]
+          picked_up_at?: string | null
           razorpay_order_id?: string | null
           razorpay_payment_id?: string | null
           razorpay_signature?: string | null
+          rider_id?: string | null
+          rider_lat?: number | null
+          rider_lng?: number | null
+          rider_location_updated_at?: string | null
           status?: Database["public"]["Enums"]["order_status"]
           total: number
           updated_at?: string
@@ -187,6 +199,7 @@ export type Database = {
           coupon_code?: string | null
           created_at?: string
           customer_id?: string
+          delivered_at?: string | null
           delivery_address?: string | null
           delivery_fee?: number
           delivery_lat?: number | null
@@ -199,9 +212,14 @@ export type Database = {
           payment_failure_reason?: string | null
           payment_provider?: string
           payment_status?: Database["public"]["Enums"]["payment_status"]
+          picked_up_at?: string | null
           razorpay_order_id?: string | null
           razorpay_payment_id?: string | null
           razorpay_signature?: string | null
+          rider_id?: string | null
+          rider_lat?: number | null
+          rider_lng?: number | null
+          rider_location_updated_at?: string | null
           status?: Database["public"]["Enums"]["order_status"]
           total?: number
           updated_at?: string
@@ -258,11 +276,14 @@ export type Database = {
           first_order_coupon_used: boolean
           full_name: string | null
           id: string
+          is_rider_active: boolean
           is_verified: boolean
           lat: number | null
           lng: number | null
           location: string | null
           phone: string | null
+          vehicle_number: string | null
+          vehicle_type: string | null
         }
         Insert: {
           address?: string | null
@@ -280,11 +301,14 @@ export type Database = {
           first_order_coupon_used?: boolean
           full_name?: string | null
           id: string
+          is_rider_active?: boolean
           is_verified?: boolean
           lat?: number | null
           lng?: number | null
           location?: string | null
           phone?: string | null
+          vehicle_number?: string | null
+          vehicle_type?: string | null
         }
         Update: {
           address?: string | null
@@ -302,11 +326,14 @@ export type Database = {
           first_order_coupon_used?: boolean
           full_name?: string | null
           id?: string
+          is_rider_active?: boolean
           is_verified?: boolean
           lat?: number | null
           lng?: number | null
           location?: string | null
           phone?: string | null
+          vehicle_number?: string | null
+          vehicle_type?: string | null
         }
         Relationships: []
       }
@@ -409,7 +436,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "customer" | "cook" | "admin"
+      app_role: "customer" | "cook" | "admin" | "rider"
       cook_status: "pending" | "approved" | "rejected"
       order_status:
         | "placed"
@@ -546,7 +573,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["customer", "cook", "admin"],
+      app_role: ["customer", "cook", "admin", "rider"],
       cook_status: ["pending", "approved", "rejected"],
       order_status: [
         "placed",
