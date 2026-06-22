@@ -172,6 +172,27 @@ function AuthPage() {
           </form>
         )}
 
+        {mode === "email-otp" && step === "enter" && (
+          <form onSubmit={handleEmailOtpStart} className="mt-4 space-y-3 animate-fade-in">
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="you@example.com" className="w-full h-11 rounded-xl bg-background ring-1 ring-border px-3 text-sm" />
+            <button disabled={busy} className="w-full h-11 rounded-xl bg-primary text-primary-foreground font-semibold inline-flex items-center justify-center gap-2 disabled:opacity-50">
+              {busy && <Loader2 className="h-4 w-4 animate-spin" />}Send OTP to email
+            </button>
+            <p className="text-[11px] text-muted-foreground text-center">We'll email a 6-digit code. No password needed.</p>
+          </form>
+        )}
+
+        {mode === "email-otp" && step === "verify" && (
+          <form onSubmit={handleEmailOtpVerify} className="mt-4 space-y-3 animate-fade-in">
+            <button type="button" onClick={() => setStep("enter")} className="inline-flex items-center text-xs text-muted-foreground"><ArrowLeft className="h-3.5 w-3.5 mr-1" /> Back</button>
+            <div className="text-sm text-muted-foreground">Enter the 6-digit code sent to <span className="font-semibold text-foreground">{email}</span></div>
+            <input value={otp} onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))} required inputMode="numeric" placeholder="••••••" className="w-full h-12 text-center text-2xl font-bold tracking-[0.5em] rounded-xl bg-background ring-1 ring-border" />
+            <button disabled={busy || otp.length < 6} className="w-full h-11 rounded-xl bg-primary text-primary-foreground font-semibold inline-flex items-center justify-center gap-2 disabled:opacity-50">
+              {busy && <Loader2 className="h-4 w-4 animate-spin" />}Verify & continue
+            </button>
+          </form>
+        )}
+
         {mode === "phone" && step === "enter" && (
           <form onSubmit={handlePhoneStart} className="mt-4 space-y-3 animate-fade-in">
             <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} required placeholder="+91 98765 43210" className="w-full h-11 rounded-xl bg-background ring-1 ring-border px-3 text-sm" />
