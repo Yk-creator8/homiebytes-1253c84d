@@ -61,7 +61,7 @@ export const Route = createFileRoute("/api/public/payments/razorpay")({
             provider: "razorpay",
             event_id: eventId,
             event_type: evt.event,
-            payload: evt as unknown as Record<string, unknown>,
+            payload: evt as never,
           });
 
         // Duplicate delivery — already processed
