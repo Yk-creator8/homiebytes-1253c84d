@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ShieldCheck, ShieldOff, Trash2, Loader2, Users, ChefHat, Receipt, IndianRupee } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -6,9 +6,19 @@ import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
 import { FOOD_FALLBACK_IMAGE } from "@/lib/storage";
 import { AdminCoupons } from "@/components/AdminCoupons";
+import { checkIsAdmin } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({ meta: [{ title: "Admin — HomieBytes" }] }),
+  beforeLoad: async () => {
+    try {
+      const { isAdmin } = await checkIsAdmin();
+      if (!isAdmin) throw redirect({ to: "/" });
+    } catch (err) {
+      if (err && typeof err === "object" && "to" in err) throw err;
+      throw redirect({ to: "/" });
+    }
+  },
   component: AdminDashboard,
 });
 

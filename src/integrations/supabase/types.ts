@@ -588,6 +588,22 @@ export type Database = {
       }
     }
     Functions: {
+      current_user_is_admin: { Args: never; Returns: boolean }
+      get_available_pickups: {
+        Args: never
+        Returns: {
+          cook_id: string
+          created_at: string
+          delivery_address: string
+          delivery_fee: number
+          delivery_lat: number
+          delivery_lng: number
+          id: string
+          items: Json
+          status: Database["public"]["Enums"]["order_status"]
+          total: number
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
