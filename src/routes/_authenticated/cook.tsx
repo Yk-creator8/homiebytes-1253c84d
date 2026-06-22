@@ -9,6 +9,7 @@ import { CUISINES } from "@/lib/cuisines";
 import { toast } from "sonner";
 import { CookFeeCheckout } from "@/components/CookFeeCheckout";
 import { COOK_JOINING_FEE_INR } from "@/lib/cook-fee.functions";
+import { notifyOrderStatusChange } from "@/lib/notifications.functions";
 
 export const Route = createFileRoute("/_authenticated/cook")({
   head: () => ({ meta: [{ title: "Cook dashboard — HomieBytes" }] }),

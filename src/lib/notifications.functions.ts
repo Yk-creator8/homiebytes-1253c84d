@@ -1,9 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-type Status = "pending" | "accepted" | "preparing" | "ready" | "out_for_delivery" | "delivered" | "rejected";
+type Status = "placed" | "pending" | "accepted" | "preparing" | "ready" | "out_for_delivery" | "delivered" | "rejected";
 
 const MESSAGES: Record<Status, { title: string; body: string }> = {
+  placed:           { title: "Order received",      body: "Waiting for the cook to confirm." },
   pending:          { title: "Order received",      body: "Waiting for the cook to confirm." },
   accepted:         { title: "Order accepted ✅",    body: "Your cook is getting started." },
   preparing:        { title: "Cooking now 👨‍🍳",     body: "Your meal is being prepared fresh." },
