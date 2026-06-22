@@ -256,7 +256,7 @@ function MenuPanel({ items, loading, userId, onChange }: { items: any[]; loading
               <button onClick={() => toggleAvail(m.id, m.is_available)} title={m.is_available ? "Disable" : "Enable"} className={`h-8 w-8 inline-flex items-center justify-center rounded-lg hover:bg-secondary ${m.is_available ? "text-success" : "text-muted-foreground"}`}>
                 <Power className="h-4 w-4" />
               </button>
-              <button onClick={() => remove(m.id)} className="h-8 w-8 inline-flex items-center justify-center rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive"><Trash2 className="h-4 w-4" /></button>
+              <button aria-label="Delete dish" onClick={() => remove(m.id)} className="h-8 w-8 inline-flex items-center justify-center rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive"><Trash2 className="h-4 w-4" /></button>
             </div>
           ))}
         </div>

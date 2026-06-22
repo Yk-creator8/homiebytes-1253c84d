@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+Disallow: /auth
+Disallow: /admin
+Disallow: /cook
+Disallow: /rider
+Disallow: /cart
+Disallow: /orders
+Disallow: /favorites
+Disallow: /notifications
+Disallow: /onboarding
+Disallow: /api/
+
+Sitemap: https://homiebytes.lovable.app/sitemap.xml

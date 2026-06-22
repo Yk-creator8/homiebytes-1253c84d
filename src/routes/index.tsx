@@ -11,6 +11,37 @@ export const Route = createFileRoute("/")({
     meta: [
       { title: "HomieBytes — Good Food. Anytime. Anywhere." },
       { name: "description", content: "Fresh homemade food from cloud kitchens near you. Get 20% off your first order with code CLOUDBITES1." },
+      { property: "og:title", content: "HomieBytes — Good Food. Anytime. Anywhere." },
+      { property: "og:description", content: "Fresh homemade food from cloud kitchens near you. Get 20% off your first order." },
+      { property: "og:url", content: "https://homiebytes.lovable.app/" },
+      { property: "og:type", content: "website" },
+    ],
+    links: [{ rel: "canonical", href: "https://homiebytes.lovable.app/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "HomieBytes",
+          url: "https://homiebytes.lovable.app/",
+          logo: "https://homiebytes.lovable.app/favicon.ico",
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "HomieBytes",
+          url: "https://homiebytes.lovable.app/",
+          potentialAction: {
+            "@type": "SearchAction",
+            target: "https://homiebytes.lovable.app/browse?q={search_term_string}",
+            "query-input": "required name=search_term_string",
+          },
+        }),
+      },
     ],
   }),
   component: Index,

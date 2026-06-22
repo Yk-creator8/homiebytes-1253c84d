@@ -133,13 +133,11 @@ function Cart() {
                 <div className="font-semibold truncate">{i.name}</div>
                 <div className="mt-2 flex items-center justify-between">
                   <div className="inline-flex items-center rounded-lg ring-1 ring-border">
-                    <button onClick={() => cartStore.setQty(i.foodId, i.qty - 1)} className="h-8 w-8 inline-flex items-center justify-center hover:bg-secondary rounded-l-lg"><Minus className="h-3.5 w-3.5" /></button>
-                    <span className="w-8 text-center text-sm font-semibold">{i.qty}</span>
-                    <button onClick={() => cartStore.setQty(i.foodId, i.qty + 1)} className="h-8 w-8 inline-flex items-center justify-center hover:bg-secondary rounded-r-lg"><Plus className="h-3.5 w-3.5" /></button>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="font-bold text-primary">₹{i.price * i.qty}</div>
-                    <button onClick={() => cartStore.remove(i.foodId)} className="text-muted-foreground hover:text-destructive"><Trash2 className="h-4 w-4" /></button>
+                    <button aria-label="Decrease quantity" onClick={() => cartStore.setQty(i.foodId, i.qty - 1)} className="h-8 w-8 inline-flex items-center justify-center hover:bg-secondary rounded-l-lg"><Minus className="h-3.5 w-3.5" /></button>
+...
+                    <button aria-label="Increase quantity" onClick={() => cartStore.setQty(i.foodId, i.qty + 1)} className="h-8 w-8 inline-flex items-center justify-center hover:bg-secondary rounded-r-lg"><Plus className="h-3.5 w-3.5" /></button>
+...
+                    <button aria-label="Remove item from cart" onClick={() => cartStore.remove(i.foodId)} className="text-muted-foreground hover:text-destructive"><Trash2 className="h-4 w-4" /></button>
                   </div>
                 </div>
               </div>

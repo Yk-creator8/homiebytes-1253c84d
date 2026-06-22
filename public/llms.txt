@@ -1,0 +1,10 @@
+# HomieBytes
+
+> Order fresh homemade meals from cooks in your neighbourhood. HomieBytes is a marketplace connecting home cooks with hungry customers across India, with rider-powered delivery.
+
+HomieBytes lets customers browse dishes by cuisine, dietary preference, price, and rating, then order from verified home cooks. Cooks list their menu, and riders pick up and deliver orders.
+
+## Pages
+
+- [Home](/): Featured dishes, cuisines, and promos.
+- [Browse](/browse): Search and filter all available homemade dishes.
