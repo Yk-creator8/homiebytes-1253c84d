@@ -33,8 +33,17 @@ export const cartStore = {
   getServerSnapshot: () => [] as CartItem[],
   add(item: Omit<CartItem, "qty">, qty = 1) {
     const existing = items.find((i) => i.foodId === item.foodId);
+    const addedQty = existing ? qty : qty;
     if (existing) items = items.map((i) => i.foodId === item.foodId ? { ...i, qty: i.qty + qty } : i);
     else items = [...items, { ...item, qty }];
+    trackEvent("add_to_cart", {
+      item_id: item.foodId,
+      item_name: item.name,
+      price: item.price,
+      quantity: addedQty,
+      currency: "INR",
+      value: item.price * addedQty,
+    });
     emit();
   },
   setQty(id: string, qty: number) {
